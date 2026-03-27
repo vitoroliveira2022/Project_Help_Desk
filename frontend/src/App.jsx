@@ -1,11 +1,16 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CadastrarChamado from '../components/CadastrarChamado';
-import ListaChamados from '../components/ListarChamados';
+import EditarChamado from '../components/EditarChamado';
+import ListarChamados from '../components/ListarChamados';
 
 export default function App() {
   return (
-    <>
-      <CadastrarChamado />
-      <ListaChamados />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ListarChamados />} />
+        <Route path="/cadastrar" element={<CadastrarChamado />} />
+        <Route path="/editar/:id" element={<EditarChamado />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -5,3 +5,5 @@ OBS: mudar o type para module no 'package.json' para usar ES Modules
 npm install express 
 
 Um middleware é uma função que processa a requisição no meio do ciclo, permitindo manipular, validar ou transformar os dados antes da rota final ser executada.
+
+npm install cors

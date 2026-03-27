@@ -3,10 +3,10 @@ import { useState } from 'react';
 export default function CadastrarChamado() {
 
    const  [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [status, setStatus] = useState('');
+   const [descricao, setDescricao] = useState('');
+   const [status, setStatus] = useState('');
 
-  const handleSubmit = async (e) => {
+  const enviarForm = async (e) => {
     e.preventDefault();
     const novoChamado = { titulo, descricao, status };
     
@@ -23,7 +23,7 @@ export default function CadastrarChamado() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={enviarForm}>
         <div>
             <label>Título:</label>
             <input
@@ -54,7 +54,7 @@ export default function CadastrarChamado() {
             />
         </div>
 
-        <button type="submit">Enviar</button>
+        <button type="submit">Cadastrar chamado</button>
     </form>
   );
 }
