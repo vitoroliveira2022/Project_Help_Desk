@@ -78,7 +78,7 @@ app.delete('/chamados/:id', (req, res) => {
     res.status(204).send(); // 204 No Content, resposta sem corpo
     });
 
-app.put('/chamados/:id', (req, res) => {
+app.patch('/chamados/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const chamadoIndex = chamados.findIndex(c => c.id === id);
 
@@ -86,8 +86,12 @@ app.put('/chamados/:id', (req, res) => {
         return res.status(404).json({ mensagem: 'Chamado não encontrado' });
     }
 
-    chamados[chamadoIndex] = { id, ...req.body }; // substitui (atualiza) o chamado existente pelos novos dados
-    res.json(chamados[chamadoIndex]); // envia o chamado atualizado em formato JSON como resposta para o front
+    chamados[chamadoIndex] = {
+        ...chamados[chamadoIndex], // mantém dados antigos
+        ...req.body                // atualiza só o que veio
+    };
+
+    res.json(chamados[chamadoIndex]);
 });
 
 // Inicia o servidor na porta 3000
