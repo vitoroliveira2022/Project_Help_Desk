@@ -3,7 +3,9 @@ import ErrorPage from './ErrorPage';
 import { useChamadosContext } from '../context/ChamadosContext';
 
 export default function ListarChamados() {
+  // pegando do contexto a lista, função e estado de loading e erro
   const { chamados, removerChamado, loading, error } = useChamadosContext(); 
+  // useNavigate permite redirecionar o usuário para outras rotas
   const navigate = useNavigate();
 
   if (loading) return <p>Carregando chamados...</p>;

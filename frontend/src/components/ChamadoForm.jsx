@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 
+// recebo a funcao de envio do form, e o objeto initialData (EditarChamado)
 export default function ChamadoForm({ onSubmit, initialData = {} }) {
 
   // estado interno do formulário
-  const [form, setForm] = useState({
+  const [data, setData] = useState({
     titulo: '',
     descricao: '',
     status: '',
   });
 
-  // se vier dados (edição), preenche o form
+  // se vier dados (edição), preenche o estado
   useEffect(() => {
     if (initialData) {
-      setForm({
+      setData({
         titulo: initialData.titulo || '',
         descricao: initialData.descricao || '',
         status: initialData.status || '',
@@ -22,7 +23,7 @@ export default function ChamadoForm({ onSubmit, initialData = {} }) {
 
   // atualiza campos
   const handleChange = (e) => {
-    setForm((prev) => ({
+    setData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -31,28 +32,28 @@ export default function ChamadoForm({ onSubmit, initialData = {} }) {
   // submit reutilizável
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form); // vem via props
+    onSubmit(data); // aqui que vai executar de fato a função handleSubmit de CadastrarChamado ou EditarChamado
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         name="titulo"
-        value={form.titulo}
+        value={data.titulo}
         onChange={handleChange}
         placeholder="Título"
       />
 
       <input
         name="descricao"
-        value={form.descricao}
+        value={data.descricao}
         onChange={handleChange}
         placeholder="Descrição"
       />
 
       <input
         name="status"
-        value={form.status}
+        value={data.status}
         onChange={handleChange}
         placeholder="Status"
       />

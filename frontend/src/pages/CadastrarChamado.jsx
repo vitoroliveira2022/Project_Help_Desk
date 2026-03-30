@@ -11,5 +11,22 @@ export default function CadastrarChamado() {
     navigate('/');
   };
 
-  return <ChamadoForm onSubmit={handleSubmit} />;
+  return (
+    // estou passando via props a funcao de envio de formulario para meu form
+    <>
+      <ChamadoForm onSubmit={handleSubmit} />
+    </>
+
+  ) 
+    
 }
+
+/*
+Resumo do fluxo
+Usuário envia formulário → handleSubmit
+handleSubmit chama adicionarChamado(data) via contexto
+Hook (useChamados) chama service → API
+API retorna os dados → hook atualiza chamados no contexto
+await termina → handleSubmit continua → navigate('/')
+Página de listagem renderiza, mostrando o chamado recém-adicionado
+*/

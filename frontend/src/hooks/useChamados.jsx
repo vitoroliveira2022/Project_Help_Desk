@@ -42,7 +42,7 @@ export default function useChamados() {
   const adicionarChamado = async (novo) => {
     try {
       const data = await createChamado(novo);
-      setChamados((prev) => [...prev, data]);
+      setChamados((prev) => [...prev, data]); // adiciona novo chamado no array
     } catch {
       setError('Erro ao adicionar chamado');
     }
