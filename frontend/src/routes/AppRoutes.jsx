@@ -4,49 +4,13 @@ import ListarChamados from '../pages/ListarChamados';
 import CadastrarChamado from '../pages/CadastrarChamado';
 import EditarChamado from '../pages/EditarChamado';
 
-// desestruturando as funções do hook para passar como props
-export default function AppRoutes({
-  chamados,
-  adicionarChamado,
-  atualizarChamado,
-  removerChamado,
-  loading,
-  error
-}) 
-
-{
+export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ListarChamados
-                chamados={chamados}
-                removerChamado={removerChamado}
-                loading={loading}
-                error={error}
-            />
-          }
-        />
-
-        <Route
-          path="/cadastrar"
-          element={
-            <CadastrarChamado
-              adicionarChamado={adicionarChamado}
-            />
-          }
-        />
-
-        <Route
-          path="/editar/:id"
-          element={
-            <EditarChamado
-              atualizarChamado={atualizarChamado}
-            />
-          }
-        />
+        <Route path="/" element={<ListarChamados />} />
+        <Route path="/cadastrar" element={<CadastrarChamado />} />
+        <Route path="/editar/:id" element={<EditarChamado />} />
       </Routes>
     </BrowserRouter>
   );

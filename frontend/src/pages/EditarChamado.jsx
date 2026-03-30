@@ -1,45 +1,35 @@
-// pages/EditarChamado.jsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getChamadoById } from '../services/chamadosService';
+import { useChamadosContext } from '../context/ChamadosContext';
+import ChamadoForm from '../components/ChamadoForm';
 
-export default function EditarChamado({ atualizarChamado }) {
+export default function EditarChamado() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    titulo: '',
-    descricao: '',
-    status: '',
-  });
+  const { atualizarChamado, buscarChamadoPorId } = useChamadosContext();
+
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     async function carregar() {
-      const data = await getChamadoById(id);
-      setForm(data);
+      const chamado = await buscarChamadoPorId(id);
+      setData(chamado);
     }
-
     carregar();
   }, [id]);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const salvar = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (form) => {
     await atualizarChamado(id, form);
     navigate('/');
   };
 
-  return (
-    <form onSubmit={salvar}>
-      <input name="titulo" value={form.titulo} onChange={handleChange} />
-      <input name="descricao" value={form.descricao} onChange={handleChange} />
-      <input name="status" value={form.status} onChange={handleChange} />
+  if (!data) return <p>Carregando...</p>;
 
-      <button type="submit">Atualizar</button>
-    </form>
+  return (
+    <ChamadoForm
+      initialData={data} //  props com dados
+      onSubmit={handleSubmit} // props com função
+    />
   );
 }

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import {
   getChamados,
+  getChamadoById,
   createChamado,
   updateChamado,
   deleteChamado,
@@ -29,6 +30,14 @@ export default function useChamados() {
   useEffect(() => {
     buscarChamados();
   }, []);
+
+  const buscarChamadoPorId = async (id) => {
+    const chamadoExistente = chamados.find((c) => c.id === Number(id));
+
+    if (chamadoExistente) return chamadoExistente;
+
+    return await getChamadoById(id);
+  };
 
   const adicionarChamado = async (novo) => {
     try {
@@ -60,6 +69,8 @@ export default function useChamados() {
     }
   };
 
+
+
   return {
     chamados,
     loading,
@@ -68,5 +79,6 @@ export default function useChamados() {
     adicionarChamado,
     atualizarChamado,
     removerChamado,
+    buscarChamadoPorId
   };
 }

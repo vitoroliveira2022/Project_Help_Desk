@@ -1,16 +1,24 @@
-// pages/ListarChamados.jsx
 import { useNavigate } from 'react-router-dom';
 import ErrorPage from './ErrorPage';
+import { useChamadosContext } from '../context/ChamadosContext';
 
-export default function ListarChamados({ chamados, removerChamado, loading, error }) {
+export default function ListarChamados() {
+  const { chamados, removerChamado, loading, error } = useChamadosContext(); 
   const navigate = useNavigate();
 
-  if (loading) {
-    return <p>Carregando chamados...</p>;
-  }
+  if (loading) return <p>Carregando chamados...</p>;
+  if (error) return <ErrorPage mensagem={error} />;
 
-  if (error) {
-    return <ErrorPage mensagem={error} />;
+  if (!chamados || chamados.length === 0) {
+    return (
+      <div>
+        <h2>Chamados</h2>
+        <button onClick={() => navigate('/cadastrar')}>
+          Novo Chamado
+        </button>
+        <p>Nenhum chamado encontrado.</p>
+      </div>
+    );
   }
 
   return (
