@@ -1,5 +1,3 @@
-
-
 // Importa todas as funções do service (onde está a regra de negócio)
 import * as service from '../services/chamadosService.js';
 

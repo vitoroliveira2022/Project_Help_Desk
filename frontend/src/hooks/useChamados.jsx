@@ -1,4 +1,14 @@
-// hooks/useChamados.js
+/*
+Sempre que um setState do hook for chamado (setChamados, setLoading, setError), ou seja, sempre que 
+um estado mudar:
+
+1. O Provider re-renderiza e executa novamente o hook useChamados, atualizando o valor do contexto (chamadosData).
+2. Todos os componentes que consomem o contexto e usam os valores dele também re-renderizam.
+
+Exemplos:
+- ListarChamados → lê chamados, loading, error → re-renderiza
+- CadastrarChamado → usa apenas funções do contexto (ex: adicionarChamado) → não re-renderiza
+*/
 
 import { useEffect, useState } from 'react';
 import {
@@ -59,8 +69,7 @@ export default function useChamados() {
       setError(null); // limpa o estado de erro antes de tentar criar
       const data = await createChamado(novo); // faz a requisição de criação na API
       // adiciona o novo chamado na lista de chamados
-      setChamados((prev) => [...prev, data]);
-
+      setChamados((prev) => [...prev, data]); 
     } catch {
       setError('Erro ao adicionar chamado');
     }

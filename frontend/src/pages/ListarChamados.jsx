@@ -4,11 +4,7 @@ import { useChamadosContext } from '../context/ChamadosContext';
 
 export default function ListarChamados() {
 
-  // 🔹 Consome o contexto global de chamados
-  // chamados → lista de dados
-  // removerChamado → função para deletar
-  // loading → estado de carregamento
-  // error → mensagem de erro
+  // Consome o contexto global de chamados e seleciona apenas o que será usado
   const { chamados, removerChamado, loading, error } = useChamadosContext(); 
 
   // 🔹 Hook para navegação entre rotas

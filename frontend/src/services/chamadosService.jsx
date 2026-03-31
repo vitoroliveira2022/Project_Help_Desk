@@ -9,7 +9,7 @@ export const getChamados = async () => {
 // 🔹 Busca um chamado específico pelo ID
 export const getChamadoById = async (id) => {
   const res = await fetch(`${API}/${id}`); // faz requisição a rota GET /chamados/:id no backend
-  return res.json(); // retorna o JSON do chamado para o hook
+  return res.json(); // retorna o JSON do chamado para o hook 
 };
 
 // 🔹 Cria um novo chamado
