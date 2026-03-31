@@ -1,4 +1,5 @@
 // hooks/useChamados.js
+
 import { useEffect, useState } from 'react';
 import {
   getChamados,
@@ -6,71 +7,96 @@ import {
   createChamado,
   updateChamado,
   deleteChamado,
-} from '../services/chamadosService';
+} from '../services/chamadosService'; // funções que fazem as requisições à API 
 
 export default function useChamados() {
-  const [chamados, setChamados] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
+  // 🔹 Estado principal da feature
+  const [chamados, setChamados] = useState([]); // estado para armazenar a lista de chamados
+  const [loading, setLoading] = useState(false); // estado para o carregamento (UX)
+  const [error, setError] = useState(null); // estado para armazenar mensagens de erro
+
+  // 🔹 Busca todos os chamados da API
   const buscarChamados = async () => {
     try {
-      setLoading(true);
-      setError(null);
-
-      const data = await getChamados();
-      setChamados(data);
+      setLoading(true); // inicia o carregamento dos dados       
+      setError(null);   // limpa o estado erro para novas requisições
+      const data = await getChamados(); // chamada à API
+      setChamados(data); // atualiza estado com os dados retornados
     } catch (err) {
-      setError('Erro ao buscar chamados');
+      setError('Erro ao buscar chamados'); // tratamento de erro
     } finally {
-      setLoading(false);
+      setLoading(false); // finaliza loading independente de sucesso ou erro
     }
   };
 
+  // 🔹 Executa automaticamente ao montar o componente
   useEffect(() => {
     buscarChamados();
-  }, []);
+  }, []); // [] = executa apenas uma vez
 
+  // 🔹 Busca um chamado específico
   const buscarChamadoPorId = async (id) => {
-    const chamadoExistente = chamados.find((c) => c.id === Number(id));
+    try{
+      setError(null); // limpa o estado de erro antes de tentar buscar
+      // tenta encontrar no estado local primeiro para evitar requisição desnecessária
+      const chamadoExistente = chamados.find((c) => c.id === Number(id));
 
-    if (chamadoExistente) return chamadoExistente;
+      // se já existir retorna o chamado encontrado (cache local) sem fazer nova requisição na API
+      if (chamadoExistente) return chamadoExistente;
 
-    return await getChamadoById(id);
+      // se não existir no estado, busca na API
+      return await getChamadoById(id);
+    } catch {
+      setError('Erro ao buscar chamado por ID');
+    }
+    
   };
 
+  // 🔹 Cria um novo chamado
   const adicionarChamado = async (novo) => {
     try {
-      const data = await createChamado(novo);
-      setChamados((prev) => [...prev, data]); // adiciona novo chamado no array
+      setError(null); // limpa o estado de erro antes de tentar criar
+      const data = await createChamado(novo); // faz a requisição de criação na API
+      // adiciona o novo chamado na lista de chamados
+      setChamados((prev) => [...prev, data]);
+
     } catch {
       setError('Erro ao adicionar chamado');
     }
   };
 
+  // 🔹 Atualiza um chamado existente
   const atualizarChamado = async (id, dados) => {
     try {
-      const atualizado = await updateChamado(id, dados);
+      setError(null); // limpa o estado de erro antes de tentar atualizar
+      const atualizado = await updateChamado(id, dados); // faz a requisição de atualização na API
 
+      // substitui apenas o item atualizado (imutabilidade)
       setChamados((prev) =>
         prev.map((c) => (c.id === Number(id) ? atualizado : c))
       );
+
     } catch {
       setError('Erro ao atualizar chamado');
     }
   };
 
+  // 🔹 Remove um chamado
   const removerChamado = async (id) => {
     try {
-      await deleteChamado(id);
-      setChamados((prev) => prev.filter((c) => c.id !== id));
+      setError(null); // limpa o estado de erro antes de tentar remover
+      await deleteChamado(id); // faz a requisição de exclusão na API
+
+      // remove do estado local (lista de chamados) o item deletado
+      setChamados((prev) => prev.filter((c) => c.id !== Number(id)));
+
     } catch {
       setError('Erro ao remover chamado');
     }
   };
 
-
-
+  // Retorna a lista de chamados e funções para serem usados nos componentes
   return {
     chamados,
     loading,

@@ -1,4 +1,3 @@
-// Importa funções do React:
 // createContext → cria um contexto global
 // useContext → permite consumir esse contexto
 import { createContext, useContext } from 'react';
@@ -10,19 +9,18 @@ import useChamados from '../hooks/useChamados';
 // Cria o contexto (é como um "container global" de dados)
 const ChamadosContext = createContext();
 
-
-// Componente Provider → responsável por "fornecer" os dados para toda a aplicação
-export function ChamadosProvider({ children }) {
+// ChamadosProvider fornece os dados para toda a aplicação
+export function ChamadosProvider({ children }) { // children = todos os componentes dentro do Provider (AppRoutes)
 
   // Executa o hook que contém toda lógica e estado (chamados, loading, funções etc.)
   const chamadosData = useChamados();
 
   return (
-    // Provider é quem disponibiliza os dados para todos os componentes filhos
-    // value = tudo que estará disponível globalmente
+   
+    // Provider disponibiliza o "value" (chamadosData) para todos os componentes filhos
     <ChamadosContext.Provider value={chamadosData}>
       
-      {/* children = todos os componentes dentro do Provider (ex: AppRoutes) */}
+      {/* children = todos os componentes dentro do Provider (AppRoutes) */}
       {children}
       
     </ChamadosContext.Provider>
@@ -30,9 +28,8 @@ export function ChamadosProvider({ children }) {
 }
 
 
-// Hook personalizado para facilitar o uso do contexto
+// Hook para acessar os dados do contexto em qualquer componente
 export function useChamadosContext() {
-
-  // useContext acessa os dados que estão dentro do Provider
+  // useContext consome o "value" fornecido pelo Provider (ChamadosContext)
   return useContext(ChamadosContext);
 }
