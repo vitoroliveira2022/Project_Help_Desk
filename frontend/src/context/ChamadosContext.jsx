@@ -12,6 +12,7 @@ const ChamadosContext = createContext();
 export function ChamadosProvider({ children }) { // children = todos os componentes dentro do Provider (AppRoutes)
 
   // Executa o hook que contém toda lógica e estado (chamados, loading, funções etc.)
+  // Quando o Provider é montado (App.jsx), o hook é inicializado, o useEffect do hook é executado (apenas na montagem)
   const chamadosData = useChamados();
 
   return (

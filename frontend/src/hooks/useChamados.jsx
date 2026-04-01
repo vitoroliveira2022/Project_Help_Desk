@@ -8,6 +8,8 @@ um estado mudar:
 Exemplos:
 - ListarChamados → lê chamados, loading, error → re-renderiza
 - CadastrarChamado → usa apenas funções do contexto (ex: adicionarChamado) → não re-renderiza
+
+OBS: O useEffect interno do hook (com array de dependências vazio) não é executado em re-renders.
 */
 
 import { useEffect, useState } from 'react';
@@ -21,12 +23,10 @@ import {
 
 export default function useChamados() {
 
-  // 🔹 Estado principal da feature
   const [chamados, setChamados] = useState([]); // estado para armazenar a lista de chamados
   const [loading, setLoading] = useState(false); // estado para o carregamento (UX)
   const [error, setError] = useState(null); // estado para armazenar mensagens de erro
 
-  // 🔹 Busca todos os chamados da API
   const buscarChamados = async () => {
     try {
       setLoading(true); // inicia o carregamento dos dados       
@@ -40,12 +40,13 @@ export default function useChamados() {
     }
   };
 
-  // 🔹 Executa automaticamente ao montar o componente
+  // Executa apenas na montagem do Provider (ChamadosContext)
+  // Não é executado em re-renders; só rodaria novamente se o Provider fosse desmontado e montado de novo
   useEffect(() => {
     buscarChamados();
-  }, []); // [] = executa apenas uma vez
+  }, []); // [] = executa uma única vez
 
-  // 🔹 Busca um chamado específico
+  
   const buscarChamadoPorId = async (id) => {
     try{
       setError(null); // limpa o estado de erro antes de tentar buscar
@@ -63,7 +64,6 @@ export default function useChamados() {
     
   };
 
-  // 🔹 Cria um novo chamado
   const adicionarChamado = async (novo) => {
     try {
       setError(null); // limpa o estado de erro antes de tentar criar
@@ -75,7 +75,6 @@ export default function useChamados() {
     }
   };
 
-  // 🔹 Atualiza um chamado existente
   const atualizarChamado = async (id, dados) => {
     try {
       setError(null); // limpa o estado de erro antes de tentar atualizar
@@ -91,7 +90,6 @@ export default function useChamados() {
     }
   };
 
-  // 🔹 Remove um chamado
   const removerChamado = async (id) => {
     try {
       setError(null); // limpa o estado de erro antes de tentar remover
