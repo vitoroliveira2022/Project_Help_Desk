@@ -25,7 +25,7 @@ export function ChamadosProvider({ children }) { // children = todos os componen
   );
 }
 
-// Hook para acessar os dados do contexto em qualquer componente
+// Hook para consumir o contexto de chamados em qualquer componente da aplicação
 export function useChamadosContext() {
   // useContext consome o "value" fornecido pelo Provider (ChamadosContext)
   return useContext(ChamadosContext);

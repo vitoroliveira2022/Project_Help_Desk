@@ -3,8 +3,8 @@ import { ChamadosProvider } from './context/ChamadosContext';
 
 export default function App() {
   return (
-    // ChamadosProvider envolve toda a aplicação, permitindo que qualquer componente dentro de 
-    // AppRoutes tenha acesso ao contexto de chamados (dados e funções)
+    // ChamadosProvider cria e fornece o contexto ao AppRoutes
+    // qualquer componente de AppRoutes terá acesso ao contexto de chamados (dados e funções)
     <ChamadosProvider>
 
       {/* AppRoutes é responsável pelo controle de rotas da aplicação.
