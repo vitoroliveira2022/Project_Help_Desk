@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum RoleUsuario {
+  USER
+  ADMIN
+}
+
+enum StatusChamado {
+  ABERTO
+  EM_ATENDIMENTO
+  FINALIZADO
+  CANCELADO
+}
+
+model Usuario {
+  id       Int    @id @default(autoincrement())
+  nome     String
+  email    String @unique
+  senha    String
+  role     RoleUsuario @default(USER)
+
+  criadoEm DateTime @default(now())
+
+  chamados Chamado[] @relation("UsuarioChamados")
+}
+
+model Tecnico {
+  id       Int    @id @default(autoincrement())
+  nome     String
+  email    String @unique
+  senha    String
+
+  criadoEm DateTime @default(now())
+
+  chamados Chamado[] @relation("TecnicoChamados")
+}
+
+model Chamado {
+  id          Int    @id @default(autoincrement())
+  titulo      String
+  descricao   String
+  status      StatusChamado @default(ABERTO)
+
+  usuarioId   Int
+  usuario     Usuario @relation("UsuarioChamados", fields: [usuarioId], references: [id])
+
+  tecnicoId   Int?
+  tecnico     Tecnico? @relation("TecnicoChamados", fields: [tecnicoId], references: [id])
+
+  criadoEm    DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}

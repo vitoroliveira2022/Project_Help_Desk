@@ -1,50 +1,57 @@
-// src/services/chamados.service.js
+import * as repository from '../repositories/chamadosRepository.js';
 
-// Importa os dados (simulando banco de dados)
-import { chamados } from '../repository/chamadosRepository.js';
-
-// =========================
-// LISTAR TODOS OS CHAMADOS
-// =========================
-export const listar = () => chamados;
-
-// =========================
-// BUSCAR UM CHAMADO POR ID
-// =========================
-export const buscarPorId = (id) =>
-  chamados.find(c => c.id === id);
-
-// =========================
-// CRIAR UM NOVO CHAMADO
-// =========================
-export const criar = (dados) => {
-  const novo = {
-    id: chamados.length + 1, // gera o próximo id
-    ...dados                  // título, descrição, status
-  };
-  chamados.push(novo);        // adiciona ao array
-  return novo;
+// LISTAR
+export const listar = async () => {
+  return repository.listar();
 };
 
-// =========================
-// ATUALIZAR UM CHAMADO EXISTENTE
-// =========================
-export const atualizar = (id, dados) => {
-  const index = chamados.findIndex(c => c.id === id);
-  if (index === -1) return null; // se não encontrou
-
-  // atualiza somente os campos enviados
-  chamados[index] = { ...chamados[index], ...dados };
-  return chamados[index];
+export const listarPorUsuario = async (usuarioId) => {
+  return repository.listarPorUsuario(usuarioId);
 };
 
-// =========================
-// DELETAR UM CHAMADO
-// =========================
-export const deletar = (id) => {
-  const index = chamados.findIndex(c => c.id === id);
-  if (index === -1) return false; // não encontrado
+// BUSCAR POR ID
+export const buscarPorId = async (id) => {
+  return repository.buscarPorId(id);
+};
 
-  chamados.splice(index, 1); // remove do array
+// CRIAR
+export const criar = async (dados) => {
+  return repository.criar(dados);
+};
+
+// ATUALIZAR
+export const atualizar = async (id, dados) => {
+  const existente = await repository.buscarPorId(id);
+
+  if (!existente) {
+    return null;
+  }
+
+  return repository.atualizar(id, dados);
+};
+
+// TECNICO ASSUMIR
+export const assumir = async (id, tecnicoId) => {
+  const chamado = await repository.buscarPorId(id);
+
+  if (!chamado) {
+    return null;
+  }
+
+  return repository.atualizar(id, {
+    tecnicoId,
+    status: 'EM_ATENDIMENTO'
+  });
+};
+
+// DELETAR
+export const deletar = async (id) => {
+  const existente = await repository.buscarPorId(id);
+
+  if (!existente) {
+    return false;
+  }
+
+  await repository.deletar(id);
   return true;
 };

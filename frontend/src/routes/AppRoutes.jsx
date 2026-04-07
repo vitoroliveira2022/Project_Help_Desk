@@ -1,3 +1,5 @@
+// No frontend, rotas controlam qual componente é renderizado com base na URL.
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import ListarChamados from '../pages/ListarChamados';

@@ -1,3 +1,5 @@
+// rodar na raiz do backend
+
 npm init -y -> comando que cria o arquivo package.json automaticamente no seu projeto.
 package.json: arquivo que diz como seu projeto funciona e o que ele precisa pra rodar. 
 OBS: mudar o type para module no 'package.json' para usar ES Modules
@@ -8,36 +10,55 @@ Um middleware é uma função que processa a requisição no meio do ciclo, perm
 
 npm install cors
 
-1️⃣ Routes (Rotas)
+# 1️⃣ Instalar Prisma CLI e Client de uma vez
+npm install prisma@5.0.0 @prisma/client@5.0.0
 
-O que faz: define quais URLs a API possui e qual função chamar quando alguém acessa.
-Exemplo: /chamados/1 → chama a função que busca o chamado.
-Analogias: é o menu do restaurante — só mostra as opções.
+# 2️⃣ Inicializar o Prisma (gera pasta prisma, schema.prisma e .env, se ainda não tiver)
+npx prisma init
 
-2️⃣ Controllers
+# 3️⃣ Gerar o Prisma Client (precisa sempre que alterar o schema)
+npx prisma generate
 
-O que faz: recebe as requisições das rotas, chama o service e devolve a resposta para o frontend.
-Exemplo: pega o id de /chamados/1 e pede ao service o chamado correspondente.
-Analogias: é o garçom — recebe o pedido e leva para a cozinha.
+# 4️⃣ Criar a primeira migration e aplicar no banco Supabase usando a URL direta
+npx prisma migrate dev --name init
 
-3️⃣ Services
+npm install jsonwebtoken bcryptjs
 
-O que faz: contém a lógica de negócio, valida dados, cria, atualiza ou deleta informações.
-Exemplo: cria um novo chamado ou atualiza o status de um existente.
-Analogias: é a cozinha — prepara os dados conforme a “receita” da aplicação.
-
-4️⃣ Repository
-
-O que faz: acessa os dados, seja em memória (array) ou banco de dados, e fornece para o service.
-Exemplo: lista de chamados, usuários, ou qualquer entidade do sistema.
-Analogias: é o estoque do restaurante — guarda os ingredientes (informações) que a cozinha vai usar.
-
-🔄 Fluxo completo de uma requisição com repository
+------------------------------------------------------------------------------------------------------
 Frontend envia requisição → ex: GET /chamados/1
-Routes decide qual controller tratar → chama o controller certo
-Controller pega parâmetros e valida → chama o service
-Service aplica lógica de negócio → chama o repository para acessar os dados
-Repository retorna os dados pro service
-Service processa os dados → devolve pro controller
-Controller envia a resposta pro frontend
-Frontend recebe o JSON
+
+Routes decide qual controller tratar → chama o controller correto
+
+Controller:
+- pega parâmetros (ex: id)
+- valida dados (ex: id válido)
+- chama o service
+
+Service:
+- aplica a lógica de negócio
+- decide o que fazer (buscar, criar, atualizar, etc.)
+- chama o repository
+
+Repository:
+- usa o Prisma para acessar o banco de dados
+- executa a query (SELECT, INSERT, UPDATE, DELETE)
+
+Banco de dados (PostgreSQL):
+- processa a query
+- retorna os dados
+
+Repository:
+- recebe os dados do banco
+- devolve para o service
+
+Service:
+- pode tratar os dados (ex: regra, fallback, erro)
+- devolve para o controller
+
+Controller:
+- define o status HTTP (200, 201, 404, etc.)
+- envia a resposta em JSON
+
+Frontend:
+- recebe os dados
+- renderiza na tela

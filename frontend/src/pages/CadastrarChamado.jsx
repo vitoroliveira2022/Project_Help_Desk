@@ -25,8 +25,9 @@ export default function CadastrarChamado() {
 Resumo do fluxo
 Usuário envia formulário → handleSubmit
 handleSubmit chama adicionarChamado(data) via contexto
-Hook (useChamados) chama service → API
-API retorna os dados → hook atualiza chamados no contexto
+Hook (useChamados) chama o service → API
+API retorna os dados → hook atualiza o estado (setChamados)
+setChamados dispara re-render → contexto é atualizado
 await termina → handleSubmit continua → navigate('/')
-Página de listagem renderiza, mostrando o chamado recém-adicionado
+Página de listagem renderiza com o estado atualizado, exibindo o novo chamado
 */
