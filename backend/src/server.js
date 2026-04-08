@@ -26,8 +26,8 @@ app.use('/chamados', chamadosRoutes);
 app.use('/usuarios', usuariosRoutes);
 app.use('/tecnicos', tecnicosRoutes);
 
-// Inicia o servidor na porta 3000
-app.listen(3000, () => {
-  // Exibe mensagem no terminal quando o servidor estiver rodando
-  console.log('Servidor rodando 🚀');
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT} 🚀`);
 });

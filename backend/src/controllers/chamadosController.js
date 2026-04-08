@@ -1,3 +1,6 @@
+// Controller de chamados: recebe requisições do cliente, 
+// chama o service para lógica de negócio, verifica permissões e retorna a resposta.
+
 import * as service from '../services/chamadosService.js';
 
 // LISTAR
@@ -15,6 +18,7 @@ export const listar = async (req, res) => {
     res.json(chamados);
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ erro: 'Erro ao listar chamados' });
   }
 };
@@ -27,39 +31,33 @@ export const buscarPorId = async (req, res) => {
 
     const chamado = await service.buscarPorId(id);
 
-    // se não for técnico/admin e não for dono do chamado
     if (!chamado || (usuario.tipo !== 'tecnico' && usuario.role !== 'ADMIN' && chamado.usuarioId !== usuario.id)) {
       return res.status(404).json({ erro: 'Chamado não encontrado' });
     }
 
     res.json(chamado);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ erro: 'Erro ao buscar chamado' });
   }
 };
 
-// CRIAR (usuario logado)
+// CRIAR
 export const criar = async (req, res) => {
   try {
     const { titulo, descricao } = req.body;
 
     if (!titulo || !descricao) {
-      return res.status(400).json({
-        erro: 'titulo e descricao são obrigatórios'
-      });
+      return res.status(400).json({ erro: 'titulo e descricao são obrigatórios' });
     }
 
     const usuarioId = req.usuario.id;
 
-    const chamado = await service.criar({
-      titulo,
-      descricao,
-      usuarioId
-    });
-
+    const chamado = await service.criar({ titulo, descricao, usuarioId });
     res.status(201).json(chamado);
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ erro: 'Erro ao criar chamado' });
   }
 };
@@ -78,6 +76,7 @@ export const atualizar = async (req, res) => {
     res.json(chamado);
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ erro: 'Erro ao atualizar chamado' });
   }
 };
@@ -96,15 +95,16 @@ export const deletar = async (req, res) => {
     res.status(204).send();
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ erro: 'Erro ao deletar chamado' });
   }
 };
 
+// ASSUMIR
 export const assumir = async (req, res) => {
   try {
     const usuario = req.usuario;
 
-    // checa se é técnico
     if (usuario.tipo !== 'tecnico') {
       return res.status(403).json({ erro: 'Apenas técnicos podem assumir chamados' });
     }
@@ -121,6 +121,7 @@ export const assumir = async (req, res) => {
     res.json(chamado);
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ erro: 'Erro ao assumir chamado' });
   }
 };

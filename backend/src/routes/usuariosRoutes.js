@@ -1,21 +1,21 @@
 import { Router } from 'express';
-import * as controller from '../controllers/usuariosController.js';
+import * as usuariosController from '../controllers/usuariosController.js';
 import { auth } from '../middlewares/auth.js';
 
 const router = Router();
 
 // login (público)
-router.post('/login', controller.login);
+router.post('/login', usuariosController.login);
 
 // protegidas
-router.get('/', auth, controller.listar);
-router.get('/:id', auth, controller.buscarPorId);
+router.get('/', auth, usuariosController.listar);
+router.get('/:id', auth, usuariosController.buscarPorId);
 
-// normalmente deixar criar usuário público
-router.post('/', controller.criar);
+// criação pública
+router.post('/', usuariosController.criar);
 
 // protegidas
-router.patch('/:id', auth, controller.atualizar);
-router.delete('/:id', auth, controller.deletar);
+router.patch('/:id', auth, usuariosController.atualizar);
+router.delete('/:id', auth, usuariosController.deletar);
 
 export default router;

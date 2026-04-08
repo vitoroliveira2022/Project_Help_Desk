@@ -6,9 +6,7 @@ import ChamadoForm from '../components/ChamadoForm';
 export default function EditarChamado() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const { atualizarChamado, buscarChamadoPorId } = useChamadosContext();
-
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -26,10 +24,5 @@ export default function EditarChamado() {
 
   if (!data) return <p>Carregando...</p>;
 
-  return (
-    <ChamadoForm
-      initialData={data} //  props com dados
-      onSubmit={handleSubmit} // props com função
-    />
-  );
+  return <ChamadoForm initialData={data} onSubmit={handleSubmit} />;
 }

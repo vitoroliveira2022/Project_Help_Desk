@@ -1,27 +1,24 @@
 import { Router } from 'express';
-import * as controller from '../controllers/chamadosController.js';
+import * as chamadosController from '../controllers/chamadosController.js';
 import { auth } from '../middlewares/auth.js';
 
 const router = Router();
 
-/*
-  app.use('/chamados', chamadosRoutes);
-*/
-
 // todas protegidas
-router.get('/', auth, controller.listar);
-router.get('/:id', auth, controller.buscarPorId);
+router.get('/', auth, chamadosController.listar);
+
+// rota mais específica primeiro
+router.patch('/:id/assumir', auth, chamadosController.assumir);
+
+router.get('/:id', auth, chamadosController.buscarPorId);
 
 // usuário cria chamado
-router.post('/', auth, controller.criar);
-
-// técnico assume chamado
-router.patch('/:id/assumir', auth, controller.assumir);
+router.post('/', auth, chamadosController.criar);
 
 // atualizar (status etc)
-router.patch('/:id', auth, controller.atualizar);
+router.patch('/:id', auth, chamadosController.atualizar);
 
 // deletar
-router.delete('/:id', auth, controller.deletar);
+router.delete('/:id', auth, chamadosController.deletar);
 
 export default router;
