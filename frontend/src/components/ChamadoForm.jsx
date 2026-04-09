@@ -1,38 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-// recebo a funcao de envio do form, e o objeto initialData (EditarChamado)
-export default function ChamadoForm({ onSubmit, initialData = {} }) {
-
-  // estado interno do formulário
+export default function ChamadoForm({ onSubmit, initialData = {}, disabled = false }) {
   const [data, setData] = useState({
-    titulo: '',
-    descricao: '',
-    status: '',
+    titulo: "",
+    descricao: "",
   });
 
-  // se vier dados (edição), preenche o estado
+  // Preenche campos apenas quando os valores mudam
   useEffect(() => {
-    if (initialData) {
-      setData({
-        titulo: initialData.titulo || '',
-        descricao: initialData.descricao || '',
-        status: initialData.status || '',
-      });
-    }
-  }, []);
+    setData({
+      titulo: initialData.titulo || "",
+      descricao: initialData.descricao || "",
+    });
+  }, [initialData.titulo, initialData.descricao]); // ✅ disparar só quando os valores mudam
 
-  // atualiza campos
   const handleChange = (e) => {
-    setData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // submit reutilizável
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(data); // aqui que vai executar de fato a função handleSubmit de CadastrarChamado ou EditarChamado
+    onSubmit(data);
   };
 
   return (
@@ -42,23 +31,22 @@ export default function ChamadoForm({ onSubmit, initialData = {} }) {
         value={data.titulo}
         onChange={handleChange}
         placeholder="Título"
+        required
+        disabled={disabled}
       />
 
-      <input
+      <textarea
         name="descricao"
         value={data.descricao}
         onChange={handleChange}
         placeholder="Descrição"
+        required
+        disabled={disabled}
       />
 
-      <input
-        name="status"
-        value={data.status}
-        onChange={handleChange}
-        placeholder="Status"
-      />
-
-      <button type="submit">Salvar</button>
+      <button type="submit" disabled={disabled}>
+        Salvar
+      </button>
     </form>
   );
 }

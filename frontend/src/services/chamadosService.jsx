@@ -1,44 +1,84 @@
-const API = 'http://localhost:3000/chamados'; // endpoint base da API
+// src/services/chamadosService.jsx
+const API = 'http://localhost:3000/chamados';
+
+// Pega o token do localStorage
+const getToken = () => {
+  const session = JSON.parse(localStorage.getItem('session'));
+  return session?.token || '';
+};
+
+// Função auxiliar para tratar respostas
+const handleResponse = async (res) => {
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    const message = data.message || 'Erro na requisição';
+    throw new Error(message);
+  }
+
+  return data;
+};
 
 // 🔹 Busca todos os chamados
 export const getChamados = async () => {
-  const res = await fetch(API); // faz requisição a rota GET /chamados no backend
-  return res.json(); // retorna o JSON da API para o hook 
+  const res = await fetch(API, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`,
+    },
+  });
+
+  return handleResponse(res);
 };
 
 // 🔹 Busca um chamado específico pelo ID
 export const getChamadoById = async (id) => {
-  const res = await fetch(`${API}/${id}`); // faz requisição a rota GET /chamados/:id no backend
-  return res.json(); // retorna o JSON do chamado para o hook 
+  const res = await fetch(`${API}/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`,
+    },
+  });
+
+  return handleResponse(res);
 };
 
 // 🔹 Cria um novo chamado
 export const createChamado = async (data) => {
-  const res = await fetch(API, { // faz requisição a rota POST /chamados no backend
-    method: 'POST', 
-    headers: { 'Content-Type': 'application/json' },
+  const res = await fetch(API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`,
+    },
     body: JSON.stringify(data),
   });
 
-  return res.json(); // retorna o JSON do chamado para o hook
+  return handleResponse(res);
 };
 
 // 🔹 Atualiza um chamado existente
 export const updateChamado = async (id, data) => {
   const res = await fetch(`${API}/${id}`, {
-    method: 'PATCH', // faz requisição a rota PATCH /chamados/:id no backend
-    headers: { 'Content-Type': 'application/json' },
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`,
+    },
     body: JSON.stringify(data),
   });
 
-  return res.json(); // retorna o JSON do chamado para o hook
+  return handleResponse(res);
 };
 
 // 🔹 Remove um chamado
 export const deleteChamado = async (id) => {
-  await fetch(`${API}/${id}`, { // faz requisição a rota DELETE /chamados/:id no backend
+  const res = await fetch(`${API}/${id}`, {
     method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+    },
   });
 
-  // não retorna JSON
+  return handleResponse(res);
 };

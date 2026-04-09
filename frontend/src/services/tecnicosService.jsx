@@ -1,34 +1,41 @@
 // src/services/tecnicosService.jsx
-const API = 'http://localhost:3000/tecnicos';
+const API_TECNICOS = 'http://localhost:3000/tecnicos';
+
+const handleResponse = async (res) => {
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || 'Erro na requisição');
+  return data;
+};
 
 export const getTecnicos = async () => {
-  const res = await fetch(API);
-  return res.json();
+  const res = await fetch(API_TECNICOS);
+  return handleResponse(res);
 };
 
 export const getTecnicoById = async (id) => {
-  const res = await fetch(`${API}/${id}`);
-  return res.json();
+  const res = await fetch(`${API_TECNICOS}/${id}`);
+  return handleResponse(res);
 };
 
 export const createTecnico = async (data) => {
-  const res = await fetch(API, {
+  const res = await fetch(API_TECNICOS, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  return res.json();
+  return handleResponse(res);
 };
 
 export const updateTecnico = async (id, data) => {
-  const res = await fetch(`${API}/${id}`, {
+  const res = await fetch(`${API_TECNICOS}/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  return res.json();
+  return handleResponse(res);
 };
 
 export const deleteTecnico = async (id) => {
-  await fetch(`${API}/${id}`, { method: 'DELETE' });
+  const res = await fetch(`${API_TECNICOS}/${id}`, { method: 'DELETE' });
+  return handleResponse(res);
 };
