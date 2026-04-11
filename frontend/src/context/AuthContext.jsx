@@ -9,39 +9,58 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carrega sessão do localStorage ao iniciar
+  // Carrega sessão
   useEffect(() => {
     const session = JSON.parse(localStorage.getItem('session'));
+
     if (session) {
-      if (session.tipo === 'USUARIO') setUsuario(session.dados);
-      if (session.tipo === 'TECNICO') setTecnico(session.dados);
+      if (session.tipo === 'TECNICO') {
+        setTecnico(session.dados);
+      } else {
+        // USER ou ADMIN
+        setUsuario(session.dados);
+      }
     }
+
     setLoading(false);
   }, []);
 
   // Login
   const login = async ({ email, senha }) => {
     try {
-      // Tenta login como usuário
       let res = await loginUsuario(email, senha).catch(() => null);
 
       if (res?.usuario) {
+        const tipo = res.usuario.tipo;
+
         setUsuario(res.usuario);
+
         localStorage.setItem(
           'session',
-          JSON.stringify({ tipo: 'USUARIO', dados: res.usuario, token: res.token })
+          JSON.stringify({
+            tipo,
+            dados: res.usuario,
+            token: res.token
+          })
         );
+
         return res.usuario;
       }
 
-      // Se não foi usuário, tenta como técnico
       res = await loginTecnico(email, senha).catch(() => null);
+
       if (res?.usuario) {
         setTecnico(res.usuario);
+
         localStorage.setItem(
           'session',
-          JSON.stringify({ tipo: 'TECNICO', dados: res.usuario, token: res.token })
+          JSON.stringify({
+            tipo: 'TECNICO',
+            dados: res.usuario,
+            token: res.token
+          })
         );
+
         return res.usuario;
       }
 
@@ -59,18 +78,31 @@ export function AuthProvider({ children }) {
   };
 
   const isAuthenticated = !!usuario || !!tecnico;
-  const role = usuario?.tipo || tecnico?.tipo || null;
+
+  // 🔧 CORREÇÃO AQUI
+  const role =
+    usuario?.tipo ||
+    usuario?.role ||
+    (tecnico ? 'TECNICO' : null);
 
   return (
     <AuthContext.Provider
-      value={{ usuario, tecnico, login, logout, loading, isAuthenticated, role, error }}
+      value={{
+        usuario,
+        tecnico,
+        login,
+        logout,
+        loading,
+        isAuthenticated,
+        role,
+        error
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Hook
 export function useAuthContext() {
   return useContext(AuthContext);
 }

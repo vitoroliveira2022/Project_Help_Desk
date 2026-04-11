@@ -2,7 +2,7 @@
 const API_USUARIOS = 'http://localhost:3000/usuarios';
 const API_TECNICOS = 'http://localhost:3000/tecnicos';
 
-// login usuário
+// usuario + admin
 export const loginUsuario = async (email, senha) => {
   const res = await fetch(`${API_USUARIOS}/login`, {
     method: 'POST',
@@ -14,14 +14,13 @@ export const loginUsuario = async (email, senha) => {
 
   if (!res.ok) throw new Error(data.message || 'Login falhou');
 
-  // Certifique-se de que o backend retorna { token, tipo } 
-  // Exemplo: { token: '...', tipo: 'USUARIO' }
-  if (!data.token) throw new Error('Login falhou: token não retornado');
-
-  return data;
+  return {
+    token: data.token,
+    usuario: data.usuario
+  };
 };
 
-// login técnico
+// tecnico
 export const loginTecnico = async (email, senha) => {
   const res = await fetch(`${API_TECNICOS}/login`, {
     method: 'POST',
@@ -32,7 +31,9 @@ export const loginTecnico = async (email, senha) => {
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.message || 'Login falhou');
-  if (!data.token) throw new Error('Login falhou: token não retornado');
 
-  return data;
+  return {
+    token: data.token,
+    usuario: data.usuario || data.tecnico
+  };
 };
