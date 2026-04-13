@@ -38,6 +38,9 @@ export const assumir = async (id, tecnicoId) => {
     return null;
   }
 
+  if (chamado.tecnicoId) {
+    throw new Error('Chamado já está em atendimento');
+  }
   return repository.atualizar(id, {
     tecnicoId,
     status: 'EM_ATENDIMENTO'

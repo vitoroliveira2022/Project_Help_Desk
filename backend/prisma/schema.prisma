@@ -11,6 +11,7 @@ datasource db {
 enum RoleUsuario {
   USER
   ADMIN
+  TECNICO
 }
 
 enum StatusChamado {
@@ -21,40 +22,33 @@ enum StatusChamado {
 }
 
 model Usuario {
-  id       Int    @id @default(autoincrement())
-  nome     String
-  email    String @unique
-  senha    String
-  role     RoleUsuario @default(USER)
+  id        Int    @id @default(autoincrement())
+  nome      String
+  email     String @unique
+  senha     String
+  role      RoleUsuario @default(USER)
 
-  criadoEm DateTime @default(now())
+  criadoEm  DateTime @default(now())
 
-  chamados Chamado[] @relation("UsuarioChamados")
-}
+  // quem abriu o chamado
+  chamadosCriados Chamado[] @relation("UsuarioChamados")
 
-model Tecnico {
-  id       Int    @id @default(autoincrement())
-  nome     String
-  email    String @unique
-  senha    String
-
-  criadoEm DateTime @default(now())
-
-  chamados Chamado[] @relation("TecnicoChamados")
+  // chamados que ele atende (se for técnico)
+  chamadosAtendidos Chamado[] @relation("TecnicoChamados")
 }
 
 model Chamado {
-  id          Int    @id @default(autoincrement())
-  titulo      String
-  descricao   String
-  status      StatusChamado @default(ABERTO)
+  id        Int    @id @default(autoincrement())
+  titulo    String
+  descricao String
+  status    StatusChamado @default(ABERTO)
 
-  usuarioId   Int
-  usuario     Usuario @relation("UsuarioChamados", fields: [usuarioId], references: [id])
+  usuarioId Int
+  usuario   Usuario @relation("UsuarioChamados", fields: [usuarioId], references: [id])
 
-  tecnicoId   Int?
-  tecnico     Tecnico? @relation("TecnicoChamados", fields: [tecnicoId], references: [id])
+  tecnicoId Int?
+  tecnico   Usuario? @relation("TecnicoChamados", fields: [tecnicoId], references: [id])
 
-  criadoEm    DateTime @default(now())
+  criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 }

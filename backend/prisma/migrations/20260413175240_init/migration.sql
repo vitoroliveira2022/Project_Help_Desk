@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "RoleUsuario" AS ENUM ('USER', 'ADMIN');
+CREATE TYPE "RoleUsuario" AS ENUM ('USER', 'ADMIN', 'TECNICO');
 
 -- CreateEnum
 CREATE TYPE "StatusChamado" AS ENUM ('ABERTO', 'EM_ATENDIMENTO', 'FINALIZADO', 'CANCELADO');
@@ -14,17 +14,6 @@ CREATE TABLE "Usuario" (
     "criadoEm" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Usuario_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Tecnico" (
-    "id" SERIAL NOT NULL,
-    "nome" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "senha" TEXT NOT NULL,
-    "criadoEm" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Tecnico_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -44,11 +33,8 @@ CREATE TABLE "Chamado" (
 -- CreateIndex
 CREATE UNIQUE INDEX "Usuario_email_key" ON "Usuario"("email");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Tecnico_email_key" ON "Tecnico"("email");
-
 -- AddForeignKey
 ALTER TABLE "Chamado" ADD CONSTRAINT "Chamado_usuarioId_fkey" FOREIGN KEY ("usuarioId") REFERENCES "Usuario"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Chamado" ADD CONSTRAINT "Chamado_tecnicoId_fkey" FOREIGN KEY ("tecnicoId") REFERENCES "Tecnico"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Chamado" ADD CONSTRAINT "Chamado_tecnicoId_fkey" FOREIGN KEY ("tecnicoId") REFERENCES "Usuario"("id") ON DELETE SET NULL ON UPDATE CASCADE;

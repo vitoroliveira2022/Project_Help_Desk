@@ -11,6 +11,10 @@ import EditarChamado from '../pages/EditarChamado';
 import GerenciarUsuarios from '../pages/GerenciarUsuarios';
 import GerenciarTecnicos from '../pages/GerenciarTecnicos';
 import ErrorPage from '../pages/ErrorPage';
+import CadastrarUsuario from '../pages/CadastrarUsuario';
+import EditarUsuario from '../pages/EditarUsuario';
+import CadastrarTecnico from '../pages/CadastrarTecnico';
+import EditarTecnico from '../pages/EditarTecnico';
 
 export default function AppRoutes() {
   const { isAuthenticated, role, loading } = useAuthContext();
@@ -114,7 +118,42 @@ export default function AppRoutes() {
           }
         />
 
+
         <Route
+          path="/usuarios/novo"
+          element={
+            <PrivateRoute allowedRoles={['ADMIN']}>
+              <CadastrarUsuario />
+            </PrivateRoute>
+          }
+      />
+
+      <Route
+        path="/usuarios/editar/:id"
+        element={
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <EditarUsuario />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/tecnicos/novo"
+        element={
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <CadastrarTecnico />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/tecnicos/editar/:id"
+        element={
+          <PrivateRoute allowedRoles={['ADMIN']}>
+            <EditarTecnico />
+          </PrivateRoute>
+        }
+      />
+       <Route
           path="*"
           element={<ErrorPage mensagem="Página não encontrada" />}
         />

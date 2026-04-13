@@ -7,7 +7,7 @@ import cors from 'cors';
 // Importa as rotas de chamados (onde ficam os endpoints)
 import chamadosRoutes from '../src/routes/chamadosRoutes.js';
 import usuariosRoutes from '../src/routes/usuariosRoutes.js';
-import tecnicosRoutes from '../src/routes/tecnicosRoutes.js';
+
 
 // Cria a aplicação Express (instância do servidor)
 const app = express();
@@ -24,7 +24,6 @@ app.use(express.json());
 // Define que todas as rotas que começam com '/tecnicos' serão tratadas no arquivo tecnicosRoutes
 app.use('/chamados', chamadosRoutes);
 app.use('/usuarios', usuariosRoutes);
-app.use('/tecnicos', tecnicosRoutes);
 
 const PORT = 3000;
 
