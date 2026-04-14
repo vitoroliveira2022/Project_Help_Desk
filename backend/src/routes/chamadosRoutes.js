@@ -4,12 +4,13 @@ import { auth } from '../middlewares/auth.js';
 
 const router = Router();
 
-// todas protegidas
+//todas protegidas
 router.get('/', auth, chamadosController.listar);
 
 // rota mais específica primeiro
 router.patch('/:id/assumir', auth, chamadosController.assumir);
 
+// somente chamados criados pelo usuário ou assumidos por ele
 router.get('/:id', auth, chamadosController.buscarPorId);
 
 // usuário cria chamado

@@ -34,13 +34,10 @@ export const atualizar = async (id, dados) => {
 export const assumir = async (id, tecnicoId) => {
   const chamado = await repository.buscarPorId(id);
 
-  if (!chamado) {
-    return null;
-  }
+  if (!chamado) return null;
 
-  if (chamado.tecnicoId) {
-    throw new Error('Chamado já está em atendimento');
-  }
+  if (chamado.tecnicoId) return null;
+
   return repository.atualizar(id, {
     tecnicoId,
     status: 'EM_ATENDIMENTO'

@@ -85,11 +85,19 @@ export const criar = async (req, res) => {
       });
     }
 
+    // regra de segurança
+    let roleFinal = 'USER';
+
+    // só ADMIN pode definir role
+    if (req.usuario?.role === 'ADMIN') {
+      roleFinal = role || 'USER';
+    }
+
     const usuario = await service.criar({
       nome,
       email,
       senha,
-      role
+      role: roleFinal
     });
 
     return res.status(201).json(usuario);

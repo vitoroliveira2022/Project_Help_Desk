@@ -75,14 +75,29 @@ export const criar = async (req, res) => {
 export const atualizar = async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const usuario = req.usuario;
 
-    const chamado = await service.atualizar(id, req.body);
+    const chamado = await service.buscarPorId(id);
 
     if (!chamado) {
       return res.status(404).json({ erro: 'Chamado não encontrado' });
     }
 
-    return res.json(chamado);
+    const podeAtualizar =
+      usuario.role === 'ADMIN' ||
+      chamado.usuarioId === usuario.id ||
+      chamado.tecnicoId === usuario.id;
+
+    if (!podeAtualizar) {
+      return res.status(403).json({
+        erro: 'Sem permissão para atualizar este chamado'
+      });
+    }
+
+    const atualizado = await service.atualizar(id, req.body);
+
+    return res.json(atualizado);
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ erro: 'Erro ao atualizar chamado' });
@@ -93,14 +108,28 @@ export const atualizar = async (req, res) => {
 export const deletar = async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const usuario = req.usuario;
 
-    const deletado = await service.deletar(id);
+    const chamado = await service.buscarPorId(id);
 
-    if (!deletado) {
+    if (!chamado) {
       return res.status(404).json({ erro: 'Chamado não encontrado' });
     }
 
+    const podeDeletar =
+      usuario.role === 'ADMIN' ||
+      chamado.usuarioId === usuario.id;
+
+    if (!podeDeletar) {
+      return res.status(403).json({
+        erro: 'Sem permissão para deletar este chamado'
+      });
+    }
+
+    await service.deletar(id);
+
     return res.status(204).send();
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ erro: 'Erro ao deletar chamado' });
@@ -120,13 +149,22 @@ export const assumir = async (req, res) => {
 
     const id = Number(req.params.id);
 
-    const chamado = await service.assumir(id, usuario.id);
+    const existente = await service.buscarPorId(id);
 
-    if (!chamado) {
+    if (!existente) {
       return res.status(404).json({ erro: 'Chamado não encontrado' });
     }
 
+    if (existente.tecnicoId) {
+      return res.status(400).json({
+        erro: 'Chamado já está em atendimento'
+      });
+    }
+
+    const chamado = await service.assumir(id, usuario.id);
+
     return res.json(chamado);
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ erro: 'Erro ao assumir chamado' });

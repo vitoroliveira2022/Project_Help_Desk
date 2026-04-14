@@ -7,14 +7,15 @@ const router = Router();
 // login (público)
 router.post('/login', usuariosController.login);
 
+// criação pública (sempre USER)
+router.post('/', usuariosController.criar);
+
+// criação por ADMIN 
+router.post('/admin', auth, usuariosController.criar);
+
 // protegidas
 router.get('/', auth, usuariosController.listar);
 router.get('/:id', auth, usuariosController.buscarPorId);
-
-// criação pública
-router.post('/', usuariosController.criar);
-
-// protegidas
 router.patch('/:id', auth, usuariosController.atualizar);
 router.delete('/:id', auth, usuariosController.deletar);
 

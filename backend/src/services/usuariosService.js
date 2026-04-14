@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs';
 
 // Buscar usuário pelo email
 export const buscarPorEmail = async (email) => {
-  // apenas delega para o repository
   return repository.buscarPorEmail(email);
 };
 
@@ -22,12 +21,12 @@ export const buscarPorId = async (id) => {
 
 // Criar usuário
 export const criar = async (dados) => {
-  // gera hash da senha antes de salvar
-  const hash = await bcrypt.hash(dados.senha, 10);
+  const { senha, ...resto } = dados;
 
-  // passa os dados para o repository, substituindo a senha pelo hash
+  const hash = await bcrypt.hash(senha, 10);
+
   return repository.criar({
-    ...dados,
+    ...resto,
     senha: hash
   });
 };
@@ -38,10 +37,9 @@ export const atualizar = async (id, dados) => {
 
   if (!existe) return null;
 
-  // se a senha estiver sendo atualizada, gerar hash antes
+  // se estiver atualizando senha, gerar hash
   if (dados.senha) {
-    const hash = await bcrypt.hash(dados.senha, 10);
-    dados.senha = hash;
+    dados.senha = await bcrypt.hash(dados.senha, 10);
   }
 
   return repository.atualizar(id, dados);
