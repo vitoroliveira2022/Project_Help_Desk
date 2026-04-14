@@ -1,18 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getTecnicos, deleteTecnico } from '../services/tecnicosService';
+import { getUsuarios, deleteUsuario } from '../services/usuariosService';
 
 export default function GerenciarTecnicos() {
   const [tecnicos, setTecnicos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletandoId, setDeletandoId] = useState(null);
 
   const navigate = useNavigate();
 
   const carregar = async () => {
     try {
       setLoading(true);
-      const data = await getTecnicos();
-      setTecnicos(data);
+
+      const data = await getUsuarios();
+
+      // 🔥 filtra só técnicos
+      const apenasTecnicos = data.filter((u) => u.role === 'TECNICO');
+
+      setTecnicos(apenasTecnicos);
     } catch (err) {
       console.error(err);
       alert('Erro ao carregar técnicos');
@@ -26,14 +32,20 @@ export default function GerenciarTecnicos() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm('Deseja deletar este técnico?')) return;
+    const ok = window.confirm('Deseja deletar este técnico?');
+    if (!ok) return;
 
     try {
-      await deleteTecnico(id);
+      setDeletandoId(id);
+
+      await deleteUsuario(id);
+
       setTecnicos((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
       console.error(err);
       alert('Erro ao deletar técnico');
+    } finally {
+      setDeletandoId(null);
     }
   };
 
@@ -43,21 +55,16 @@ export default function GerenciarTecnicos() {
     <div>
       <h2>Gerenciar Técnicos</h2>
 
-      {/* BOTÃO NOVO */}
       <div style={{ marginBottom: '10px' }}>
         <button onClick={() => navigate('/tecnicos/novo')}>
           Novo Técnico
         </button>
 
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={{ marginLeft: '10px' }}
-        >
+        <button onClick={() => navigate('/dashboard')} style={{ marginLeft: '10px' }}>
           Voltar para Dashboard
         </button>
       </div>
 
-      {/* TABELA */}
       <table border="1" cellPadding="8">
         <thead>
           <tr>
@@ -79,20 +86,18 @@ export default function GerenciarTecnicos() {
                 <td>{t.id}</td>
                 <td>{t.nome}</td>
                 <td>{t.email}</td>
+
                 <td>
-                  <button
-                    onClick={() =>
-                      navigate(`/tecnicos/editar/${t.id}`)
-                    }
-                  >
+                  <button onClick={() => navigate(`/tecnicos/editar/${t.id}`)}>
                     Editar
                   </button>
 
                   <button
                     onClick={() => handleDelete(t.id)}
+                    disabled={deletandoId === t.id}
                     style={{ marginLeft: '5px' }}
                   >
-                    Deletar
+                    {deletandoId === t.id ? 'Deletando...' : 'Deletar'}
                   </button>
                 </td>
               </tr>

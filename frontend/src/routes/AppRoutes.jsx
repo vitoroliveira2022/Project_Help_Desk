@@ -19,10 +19,14 @@ import EditarTecnico from '../pages/EditarTecnico';
 export default function AppRoutes() {
   const { isAuthenticated, role, loading } = useAuthContext();
 
-  const PrivateRoute = ({ children, allowedRoles }) => {
-    if (loading) return <p>Carregando...</p>;
+  if (loading) {
+    return <p>Carregando...</p>;
+  }
 
-    if (!isAuthenticated) return <Navigate to="/login" />;
+  const PrivateRoute = ({ children, allowedRoles }) => {
+    if (!isAuthenticated) {
+      return <Navigate to="/login" />;
+    }
 
     if (allowedRoles && !allowedRoles.includes(role)) {
       return <Navigate to="/dashboard" />;
@@ -35,34 +39,13 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Routes>
 
+        {/* PUBLICAS */}
         <Route path="/" element={<Home />} />
 
-        <Route
-          path="/login"
-          element={
-            loading ? (
-              <p>Carregando...</p>
-            ) : !isAuthenticated ? (
-              <Login />
-            ) : (
-              <Navigate to="/dashboard" />
-            )
-          }
-        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<CadastroUsuario />} />
 
-        <Route
-          path="/cadastro"
-          element={
-            loading ? (
-              <p>Carregando...</p>
-            ) : !isAuthenticated ? (
-              <CadastroUsuario />
-            ) : (
-              <Navigate to="/dashboard" />
-            )
-          }
-        />
-
+        {/* PROTEGIDAS */}
         <Route
           path="/dashboard"
           element={
@@ -118,7 +101,6 @@ export default function AppRoutes() {
           }
         />
 
-
         <Route
           path="/usuarios/novo"
           element={
@@ -126,34 +108,37 @@ export default function AppRoutes() {
               <CadastrarUsuario />
             </PrivateRoute>
           }
-      />
+        />
 
-      <Route
-        path="/usuarios/editar/:id"
-        element={
-          <PrivateRoute allowedRoles={['ADMIN']}>
-            <EditarUsuario />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/tecnicos/novo"
-        element={
-          <PrivateRoute allowedRoles={['ADMIN']}>
-            <CadastrarTecnico />
-          </PrivateRoute>
-        }
-      />
+        <Route
+          path="/usuarios/editar/:id"
+          element={
+            <PrivateRoute allowedRoles={['ADMIN']}>
+              <EditarUsuario />
+            </PrivateRoute>
+          }
+        />
 
-      <Route
-        path="/tecnicos/editar/:id"
-        element={
-          <PrivateRoute allowedRoles={['ADMIN']}>
-            <EditarTecnico />
-          </PrivateRoute>
-        }
-      />
-       <Route
+        <Route
+          path="/tecnicos/novo"
+          element={
+            <PrivateRoute allowedRoles={['ADMIN']}>
+              <CadastrarTecnico />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/tecnicos/editar/:id"
+          element={
+            <PrivateRoute allowedRoles={['ADMIN']}>
+              <EditarTecnico />
+            </PrivateRoute>
+          }
+        />
+
+        {/* 404 */}
+        <Route
           path="*"
           element={<ErrorPage mensagem="Página não encontrada" />}
         />

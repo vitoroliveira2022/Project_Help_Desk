@@ -12,14 +12,21 @@ export default function EditarUsuario() {
   const navigate = useNavigate();
 
   const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const carregar = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const data = await getUsuarioById(id);
         setUsuario(data);
       } catch (err) {
-        alert('Erro ao carregar usuário');
+        setError('Erro ao carregar usuário');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -31,11 +38,12 @@ export default function EditarUsuario() {
       await updateUsuario(id, form);
       navigate('/gerenciar-usuarios');
     } catch (err) {
-      alert('Erro ao atualizar usuário');
+      setError('Erro ao atualizar usuário');
     }
   };
 
-  if (!usuario) return <p>Carregando...</p>;
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>

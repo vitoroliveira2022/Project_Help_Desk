@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
@@ -12,14 +11,14 @@ export default function Home() {
       </p>
 
       <div style={{ marginTop: '2rem' }}>
-        <button 
+        <button
           style={{ marginRight: '1rem', padding: '0.5rem 1rem' }}
           onClick={() => navigate('/login')}
         >
           Login
         </button>
 
-        <button 
+        <button
           style={{ padding: '0.5rem 1rem' }}
           onClick={() => navigate('/cadastro')}
         >

@@ -1,46 +1,42 @@
 import { useState, useEffect } from 'react';
 
-export default function UsuarioForm({ onSubmit, usuarioEditando }) {
+export default function UsuarioForm({
+  onSubmit,
+  usuarioEditando,
+  disabled = false,
+}) {
   const [form, setForm] = useState({
     nome: '',
     email: '',
     senha: '',
   });
 
-  // 🧠 Preenche apenas os campos necessários
+  // só carrega quando muda o ID do usuário
   useEffect(() => {
-    if (usuarioEditando) {
-      setForm({
-        nome: usuarioEditando.nome || '',
-        email: usuarioEditando.email || '',
-        senha: '', // nunca preencher senha por segurança
-      });
-    } else {
-      setForm({
-        nome: '',
-        email: '',
-        senha: '',
-      });
+    if (!usuarioEditando) {
+      setForm({ nome: '', email: '', senha: '' });
+      return;
     }
-  }, [usuarioEditando]);
+
+    setForm({
+      nome: usuarioEditando.nome || '',
+      email: usuarioEditando.email || '',
+      senha: '',
+    });
+  }, [usuarioEditando?.id]);
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
-
-    // limpa depois de enviar
-    setForm({
-      nome: '',
-      email: '',
-      senha: '',
-    });
+    onSubmit?.(form);
   };
 
   return (
@@ -55,6 +51,7 @@ export default function UsuarioForm({ onSubmit, usuarioEditando }) {
         value={form.nome}
         onChange={handleChange}
         required
+        disabled={disabled}
       />
 
       <input
@@ -63,20 +60,27 @@ export default function UsuarioForm({ onSubmit, usuarioEditando }) {
         value={form.email}
         onChange={handleChange}
         required
+        disabled={disabled}
       />
 
       <input
         name="senha"
-        placeholder="Senha"
         type="password"
+        placeholder={
+          usuarioEditando ? 'Nova senha (opcional)' : 'Senha'
+        }
         value={form.senha}
         onChange={handleChange}
-        required={!usuarioEditando} 
-        // senha opcional no update (boa prática)
+        required={!usuarioEditando}
+        disabled={disabled}
       />
 
-      <button type="submit">
-        {usuarioEditando ? 'Atualizar' : 'Criar'}
+      <button type="submit" disabled={disabled}>
+        {disabled
+          ? 'Salvando...'
+          : usuarioEditando
+          ? 'Atualizar'
+          : 'Criar'}
       </button>
     </form>
   );

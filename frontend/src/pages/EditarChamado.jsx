@@ -10,12 +10,15 @@ export default function EditarChamado() {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  // Carrega os dados do chamado ao montar
   useEffect(() => {
     async function carregar() {
       try {
+        setLoading(true);
+        setError(null);
+
         const chamado = await buscarChamadoPorId(id);
         setData(chamado);
       } catch (err) {
@@ -24,20 +27,21 @@ export default function EditarChamado() {
         setLoading(false);
       }
     }
+
     carregar();
-  }, [id, buscarChamadoPorId]);
+  }, [id]);
 
   const handleSubmit = async (form) => {
-    setLoading(true);
+    setSaving(true);
     setError(null);
 
     try {
       await atualizarChamado(id, form);
-      navigate('/chamados'); // volta para a lista de chamados
+      navigate('/chamados');
     } catch (err) {
       setError('Erro ao atualizar chamado: ' + (err.message || 'tente novamente'));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -49,13 +53,20 @@ export default function EditarChamado() {
     <div>
       <h2>Editar Chamado</h2>
 
-      {/* Botão para voltar ao Dashboard */}
-      <button onClick={() => navigate('/dashboard')} style={{ marginBottom: '1rem' }}>
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{ marginBottom: '1rem' }}
+      >
         Voltar para Dashboard
       </button>
 
-      <ChamadoForm initialData={data} onSubmit={handleSubmit} disabled={loading} />
-      {loading && <p>Salvando alterações...</p>}
+      <ChamadoForm
+        initialData={data}
+        onSubmit={handleSubmit}
+        disabled={saving}
+      />
+
+      {saving && <p>Salvando alterações...</p>}
     </div>
   );
 }

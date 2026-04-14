@@ -1,70 +1,38 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { loginUsuario, loginTecnico } from '../services/authService';
+import { login as loginService } from '../services/authService';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
-  const [tecnico, setTecnico] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Carrega sessão
   useEffect(() => {
     const session = JSON.parse(localStorage.getItem('session'));
 
-    if (session) {
-      if (session.tipo === 'TECNICO') {
-        setTecnico(session.dados);
-      } else {
-        // USER ou ADMIN
-        setUsuario(session.dados);
-      }
+    if (session?.dados) {
+      setUser(session.dados);
     }
 
     setLoading(false);
   }, []);
 
-  // Login
   const login = async ({ email, senha }) => {
     try {
-      let res = await loginUsuario(email, senha).catch(() => null);
+      const res = await loginService(email, senha);
 
-      if (res?.usuario) {
-        const tipo = res.usuario.tipo;
+      setUser(res.usuario);
 
-        setUsuario(res.usuario);
+      localStorage.setItem(
+        'session',
+        JSON.stringify({
+          dados: res.usuario,
+          token: res.token
+        })
+      );
 
-        localStorage.setItem(
-          'session',
-          JSON.stringify({
-            tipo,
-            dados: res.usuario,
-            token: res.token
-          })
-        );
-
-        return res.usuario;
-      }
-
-      res = await loginTecnico(email, senha).catch(() => null);
-
-      if (res?.usuario) {
-        setTecnico(res.usuario);
-
-        localStorage.setItem(
-          'session',
-          JSON.stringify({
-            tipo: 'TECNICO',
-            dados: res.usuario,
-            token: res.token
-          })
-        );
-
-        return res.usuario;
-      }
-
-      throw new Error('Credenciais inválidas');
+      return res.usuario;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -72,24 +40,19 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    setUsuario(null);
-    setTecnico(null);
+    setUser(null);
     localStorage.removeItem('session');
   };
 
-  const isAuthenticated = !!usuario || !!tecnico;
+  const isAuthenticated = !!user;
 
-  // 🔧 CORREÇÃO AQUI
-  const role =
-    usuario?.tipo ||
-    usuario?.role ||
-    (tecnico ? 'TECNICO' : null);
+  // ✅ AGORA PADRÃO CORRETO DO BACKEND
+  const role = user?.role;
 
   return (
     <AuthContext.Provider
       value={{
-        usuario,
-        tecnico,
+        user,
         login,
         logout,
         loading,
@@ -104,5 +67,11 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuthContext() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuthContext deve ser usado dentro de AuthProvider');
+  }
+
+  return context;
 }

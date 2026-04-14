@@ -1,65 +1,35 @@
 // src/services/usuariosService.jsx
-const API_USUARIOS = 'http://localhost:3000/usuarios';
+import { api } from '../utils/api';
 
-const getToken = () => {
-  const session = JSON.parse(localStorage.getItem('session'));
-  return session?.token || '';
+// LISTAR
+export const getUsuarios = () => {
+  return api('/usuarios');
 };
 
-const handleResponse = async (res) => {
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.message || 'Erro na requisição');
-  return data;
+// BUSCAR POR ID
+export const getUsuarioById = (id) => {
+  return api(`/usuarios/${id}`);
 };
 
-export const getUsuarios = async () => {
-  const res = await fetch(API_USUARIOS, {
-    headers: {
-      'Authorization': `Bearer ${getToken()}`
-    }
-  });
-  return handleResponse(res);
-};
-
-export const getUsuarioById = async (id) => {
-  const res = await fetch(`${API_USUARIOS}/${id}`, {
-    headers: {
-      'Authorization': `Bearer ${getToken()}`
-    }
-  });
-  return handleResponse(res);
-};
-
-export const createUsuario = async (data) => {
-  const res = await fetch(API_USUARIOS, {
+// CRIAR
+export const createUsuario = (data) => {
+  return api('/usuarios', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getToken()}`
-    },
     body: JSON.stringify(data),
   });
-  return handleResponse(res);
 };
 
-export const updateUsuario = async (id, data) => {
-  const res = await fetch(`${API_USUARIOS}/${id}`, {
+// ATUALIZAR
+export const updateUsuario = (id, data) => {
+  return api(`/usuarios/${id}`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getToken()}`
-    },
     body: JSON.stringify(data),
   });
-  return handleResponse(res);
 };
 
-export const deleteUsuario = async (id) => {
-  const res = await fetch(`${API_USUARIOS}/${id}`, {
+// DELETAR
+export const deleteUsuario = (id) => {
+  return api(`/usuarios/${id}`, {
     method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${getToken()}`
-    }
   });
-  return handleResponse(res);
 };

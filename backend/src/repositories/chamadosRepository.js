@@ -19,18 +19,19 @@ const includeSeguro = {
   }
 };
 
-// LISTAR
+// LISTAR TODOS
 export const listar = () => {
   return prisma.chamado.findMany({
-    orderBy: { id: 'asc' },
+    orderBy: { criadoEm: 'desc' },
     include: includeSeguro
   });
 };
 
+// LISTAR POR USUÁRIO
 export const listarPorUsuario = (usuarioId) => {
   return prisma.chamado.findMany({
     where: { usuarioId },
-    orderBy: { id: 'asc' },
+    orderBy: { criadoEm: 'desc' },
     include: includeSeguro
   });
 };

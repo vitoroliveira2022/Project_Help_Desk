@@ -5,13 +5,16 @@ const selectSeguro = {
   nome: true,
   email: true,
   role: true,
-  chamados: {
+
+  // relação correta do seu schema
+  chamadosCriados: {
     select: {
       id: true,
       titulo: true,
       descricao: true,
       status: true,
-      createdAt: true,
+      criadoEm: true,
+      atualizadoEm: true,
       tecnicoId: true
     }
   }

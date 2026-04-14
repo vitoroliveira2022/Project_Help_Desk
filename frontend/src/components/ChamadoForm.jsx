@@ -1,18 +1,23 @@
 import { useState, useEffect } from "react";
 
-export default function ChamadoForm({ onSubmit, initialData = {}, disabled = false }) {
+export default function ChamadoForm({
+  onSubmit,
+  initialData = {},
+  disabled = false,
+}) {
   const [data, setData] = useState({
     titulo: "",
     descricao: "",
   });
 
-  // Preenche campos apenas quando os valores mudam
   useEffect(() => {
+    if (!initialData) return;
+
     setData({
       titulo: initialData.titulo || "",
       descricao: initialData.descricao || "",
     });
-  }, [initialData.titulo, initialData.descricao]); // ✅ disparar só quando os valores mudam
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +26,7 @@ export default function ChamadoForm({ onSubmit, initialData = {}, disabled = fal
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(data);
+    onSubmit?.(data);
   };
 
   return (
@@ -45,7 +50,7 @@ export default function ChamadoForm({ onSubmit, initialData = {}, disabled = fal
       />
 
       <button type="submit" disabled={disabled}>
-        Salvar
+        {disabled ? "Salvando..." : "Salvar"}
       </button>
     </form>
   );

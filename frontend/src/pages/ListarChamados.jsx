@@ -6,16 +6,17 @@ import ErrorPage from './ErrorPage';
 export default function ListarChamados() {
   const { chamados, removerChamado, loading, error } = useChamadosContext();
   const navigate = useNavigate();
-  const [excluindo, setExcluindo] = useState(false); // controla exclusão individual
+
+  const [excluindoId, setExcluindoId] = useState(null);
 
   const handleExcluir = async (id) => {
-    setExcluindo(true);
     try {
+      setExcluindoId(id);
       await removerChamado(id);
     } catch (err) {
       console.error('Erro ao excluir chamado:', err);
     } finally {
-      setExcluindo(false);
+      setExcluindoId(null);
     }
   };
 
@@ -27,7 +28,9 @@ export default function ListarChamados() {
       <div>
         <h2>Chamados</h2>
         <p>Nenhum chamado encontrado.</p>
-        <button onClick={() => navigate('/dashboard')}>Voltar para Dashboard</button>
+        <button onClick={() => navigate('/dashboard')}>
+          Voltar para Dashboard
+        </button>
       </div>
     );
   }
@@ -35,16 +38,28 @@ export default function ListarChamados() {
   return (
     <div>
       <h2>Chamados</h2>
-      <button onClick={() => navigate('/dashboard')} style={{ marginBottom: '1rem' }}>
+
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{ marginBottom: '1rem' }}
+      >
         Voltar para Dashboard
       </button>
+
       <ul>
         {chamados.map((c) => (
           <li key={c.id}>
             <strong>{c.titulo}</strong> - {c.descricao} ({c.status})
-            <button onClick={() => navigate(`/editar/${c.id}`)}>Editar</button>
-            <button onClick={() => handleExcluir(c.id)} disabled={excluindo}>
-              {excluindo ? 'Excluindo...' : 'Excluir'}
+
+            <button onClick={() => navigate(`/editar/${c.id}`)}>
+              Editar
+            </button>
+
+            <button
+              onClick={() => handleExcluir(c.id)}
+              disabled={excluindoId === c.id}
+            >
+              {excluindoId === c.id ? 'Excluindo...' : 'Excluir'}
             </button>
           </li>
         ))}

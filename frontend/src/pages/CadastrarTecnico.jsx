@@ -1,17 +1,30 @@
 import { useNavigate } from 'react-router-dom';
-import { createTecnico } from '../services/tecnicosService';
+import { createUsuario } from '../services/usuariosService';
 import TecnicoForm from '../components/TecnicoForm';
+import { useState } from 'react';
 
 export default function CadastrarTecnico() {
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const handleSubmit = async (form) => {
     try {
-      await createTecnico(form);
+      setLoading(true);
+      setError(null);
+
+      await createUsuario({
+        ...form,
+        role: 'TECNICO',
+      });
+
       navigate('/gerenciar-tecnicos');
     } catch (err) {
       console.error(err);
-      alert('Erro ao criar técnico');
+      setError('Erro ao criar técnico');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -19,10 +32,18 @@ export default function CadastrarTecnico() {
     <div>
       <h2>Novo Técnico</h2>
 
-      <TecnicoForm onSubmit={handleSubmit} />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <button onClick={() => navigate('/gerenciar-tecnicos')}>
-        Voltar
+      <TecnicoForm
+        onSubmit={handleSubmit}
+        disabled={loading}
+      />
+
+      <button
+        onClick={() => navigate('/gerenciar-tecnicos')}
+        disabled={loading}
+      >
+        {loading ? 'Salvando...' : 'Voltar'}
       </button>
     </div>
   );

@@ -29,12 +29,8 @@ export default function useChamados() {
     }
   };
 
-  // 🔥 AQUI ESTÁ A CORREÇÃO PRINCIPAL
   useEffect(() => {
-    // Espera o Auth terminar de carregar
     if (authLoading) return;
-
-    // Só busca se estiver logado
     if (!isAuthenticated) return;
 
     buscarChamados();
@@ -44,10 +40,20 @@ export default function useChamados() {
     try {
       setError(null);
 
-      const existente = chamados.find((c) => c.id === Number(id));
-      if (existente) return existente;
+      const data = await getChamadoById(id);
 
-      return await getChamadoById(id);
+      // opcional: atualizar cache local
+      setChamados((prev) => {
+        const exists = prev.some((c) => c.id === data.id);
+
+        if (exists) {
+          return prev.map((c) => (c.id === data.id ? data : c));
+        }
+
+        return [...prev, data];
+      });
+
+      return data;
     } catch (err) {
       setError(err.message || 'Erro ao buscar chamado por ID');
     }
@@ -58,7 +64,8 @@ export default function useChamados() {
       setError(null);
 
       const data = await createChamado(novo);
-      setChamados((prev) => [...prev, data]);
+
+      setChamados((prev) => [data, ...prev]);
     } catch (err) {
       setError(err.message || 'Erro ao adicionar chamado');
     }

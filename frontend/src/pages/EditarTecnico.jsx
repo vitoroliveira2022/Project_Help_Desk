@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  getTecnicoById,
-  updateTecnico,
-} from '../services/tecnicosService';
+  getUsuarioById,
+  updateUsuario,
+} from '../services/usuariosService';
 
 import TecnicoForm from '../components/TecnicoForm';
 
@@ -12,14 +12,21 @@ export default function EditarTecnico() {
   const navigate = useNavigate();
 
   const [tecnico, setTecnico] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const carregar = async () => {
       try {
-        const data = await getTecnicoById(id);
+        setLoading(true);
+        setError(null);
+
+        const data = await getUsuarioById(id);
         setTecnico(data);
       } catch (err) {
-        alert('Erro ao carregar técnico');
+        setError('Erro ao carregar técnico');
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -28,14 +35,19 @@ export default function EditarTecnico() {
 
   const handleSubmit = async (form) => {
     try {
-      await updateTecnico(id, form);
+      await updateUsuario(id, {
+        ...form,
+        role: 'TECNICO',
+      });
+
       navigate('/gerenciar-tecnicos');
     } catch (err) {
-      alert('Erro ao atualizar técnico');
+      setError('Erro ao atualizar técnico');
     }
   };
 
-  if (!tecnico) return <p>Carregando...</p>;
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>

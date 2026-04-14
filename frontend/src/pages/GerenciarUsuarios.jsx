@@ -8,6 +8,7 @@ import {
 export default function GerenciarUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletandoId, setDeletandoId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -29,14 +30,20 @@ export default function GerenciarUsuarios() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm('Deseja deletar este usuário?')) return;
+    const ok = window.confirm('Deseja deletar este usuário?');
+    if (!ok) return;
 
     try {
+      setDeletandoId(id);
+
       await deleteUsuario(id);
+
       setUsuarios((prev) => prev.filter((u) => u.id !== id));
     } catch (err) {
       console.error(err);
       alert('Erro ao deletar usuário');
+    } finally {
+      setDeletandoId(null);
     }
   };
 
@@ -46,7 +53,6 @@ export default function GerenciarUsuarios() {
     <div>
       <h2>Gerenciar Usuários</h2>
 
-      {/* BOTÕES TOPO */}
       <div style={{ marginBottom: '10px' }}>
         <button onClick={() => navigate('/usuarios/novo')}>
           Novo Usuário
@@ -60,7 +66,6 @@ export default function GerenciarUsuarios() {
         </button>
       </div>
 
-      {/* TABELA */}
       <table border="1" cellPadding="8">
         <thead>
           <tr>
@@ -84,20 +89,20 @@ export default function GerenciarUsuarios() {
                 <td>{u.nome}</td>
                 <td>{u.email}</td>
                 <td>{u.role}</td>
+
                 <td>
                   <button
-                    onClick={() =>
-                      navigate(`/usuarios/editar/${u.id}`)
-                    }
+                    onClick={() => navigate(`/usuarios/editar/${u.id}`)}
                   >
                     Editar
                   </button>
 
                   <button
                     onClick={() => handleDelete(u.id)}
+                    disabled={deletandoId === u.id}
                     style={{ marginLeft: '5px' }}
                   >
-                    Deletar
+                    {deletandoId === u.id ? 'Deletando...' : 'Deletar'}
                   </button>
                 </td>
               </tr>

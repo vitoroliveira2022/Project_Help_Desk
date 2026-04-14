@@ -2,7 +2,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
-  const { usuario, tecnico, loading, logout } = useAuthContext();
+  const { user, role, loading, logout } = useAuthContext();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -10,11 +10,9 @@ export default function Dashboard() {
     navigate('/login');
   };
 
-  if (loading) {
-    return <p>Carregando...</p>;
-  }
+  if (loading) return <p>Carregando...</p>;
 
-  if (!usuario && !tecnico) {
+  if (!user) {
     return (
       <p>
         Não logado.{' '}
@@ -23,18 +21,20 @@ export default function Dashboard() {
     );
   }
 
-  if (usuario?.tipo === 'ADMIN') {
+  if (role === 'ADMIN') {
     return (
       <div>
         <h2>Dashboard Admin</h2>
-        <p>Bem-vindo {usuario.nome}!</p>
+        <p>Bem-vindo {user.nome}!</p>
 
         <button onClick={() => navigate('/gerenciar-usuarios')}>
           Gerenciar Usuários
         </button>
+
         <button onClick={() => navigate('/gerenciar-tecnicos')}>
           Gerenciar Técnicos
         </button>
+
         <button onClick={() => navigate('/chamados')}>
           Ver Chamados
         </button>
@@ -45,15 +45,16 @@ export default function Dashboard() {
     );
   }
 
-  if (usuario?.tipo === 'USER') {
+  if (role === 'USER') {
     return (
       <div>
         <h2>Dashboard Usuário</h2>
-        <p>Bem-vindo {usuario.nome}!</p>
+        <p>Bem-vindo {user.nome}!</p>
 
         <button onClick={() => navigate('/chamados')}>
           Meus Chamados
         </button>
+
         <button onClick={() => navigate('/cadastrar')}>
           Abrir Novo Chamado
         </button>
@@ -64,21 +65,5 @@ export default function Dashboard() {
     );
   }
 
-  if (tecnico) {
-    return (
-      <div>
-        <h2>Dashboard Técnico</h2>
-        <p>Bem-vindo {tecnico.nome}!</p>
-
-        <button onClick={() => navigate('/chamados')}>
-          Chamados Disponíveis
-        </button>
-
-        <hr />
-        <button onClick={handleLogout}>Sair</button>
-      </div>
-    );
-  }
-
-  return null;
+  return <p>Role desconhecida: {role}</p>;
 }

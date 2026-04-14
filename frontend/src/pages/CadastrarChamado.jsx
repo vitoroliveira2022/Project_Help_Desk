@@ -9,14 +9,23 @@ export default function CadastrarChamado() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (data) => {
     setLoading(true);
     setError(null);
+    setSuccess(false);
 
     try {
       await adicionarChamado(data);
-      navigate('/chamados'); // volta para a lista de chamados
+
+      setSuccess(true);
+
+      // pequeno delay melhora UX (usuário percebe sucesso)
+      setTimeout(() => {
+        navigate('/chamados');
+      }, 800);
+
     } catch (err) {
       setError('Erro ao cadastrar chamado: ' + (err.message || 'tente novamente'));
     } finally {
@@ -28,13 +37,19 @@ export default function CadastrarChamado() {
     <div>
       <h2>Abrir Novo Chamado</h2>
 
-      {/* Botão para voltar ao Dashboard */}
-      <button onClick={() => navigate('/dashboard')} style={{ marginBottom: '1rem' }}>
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{ marginBottom: '1rem' }}
+        disabled={loading}
+      >
         Voltar para Dashboard
       </button>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>Chamado criado com sucesso!</p>}
+
       <ChamadoForm onSubmit={handleSubmit} disabled={loading} />
+
       {loading && <p>Enviando chamado...</p>}
     </div>
   );
