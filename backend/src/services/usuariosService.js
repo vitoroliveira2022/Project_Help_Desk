@@ -33,12 +33,14 @@ export const criar = async (dados) => {
 
 // Atualizar usuário
 export const atualizar = async (id, dados) => {
+  
   const existe = await repository.buscarPorId(id);
 
   if (!existe) return null;
 
   // se estiver atualizando senha, gerar hash
   if (dados.senha) {
+    
     dados.senha = await bcrypt.hash(dados.senha, 10);
   }
 

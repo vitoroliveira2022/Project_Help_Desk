@@ -5,13 +5,13 @@ import { auth } from '../middlewares/auth.js';
 const router = Router();
 
 // login (público)
+
 router.post('/login', usuariosController.login);
+router.post('/', usuariosController.criarUsuario); // USER fixo
 
-// criação pública (sempre USER)
-router.post('/', usuariosController.criar);
+router.post('/tecnicos', auth, usuariosController.criarTecnico);
 
-// criação por ADMIN 
-router.post('/admin', auth, usuariosController.criar);
+router.post('/admin', auth, usuariosController.criarAdmin);
 
 // protegidas
 router.get('/', auth, usuariosController.listar);
