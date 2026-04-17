@@ -33,3 +33,10 @@ export const deleteChamado = (id) => {
     method: 'DELETE',
   });
 };
+
+// ASSUMIR CHAMADO (TÉCNICO)
+export const assumirChamado = (id) => {
+  return api(`/chamados/${id}/assumir`, {
+    method: 'PATCH',
+  });
+};

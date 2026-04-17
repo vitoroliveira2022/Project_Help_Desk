@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { createUsuario } from '../services/usuariosService';
+import { createTecnico } from '../services/usuariosService';
 import TecnicoForm from '../components/TecnicoForm';
 import { useState } from 'react';
 
@@ -14,10 +14,7 @@ export default function CadastrarTecnico() {
       setLoading(true);
       setError(null);
 
-      await createUsuario({
-        ...form,
-        role: 'TECNICO',
-      });
+      await createTecnico(form);
 
       navigate('/gerenciar-tecnicos');
     } catch (err) {

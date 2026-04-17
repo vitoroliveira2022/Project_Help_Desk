@@ -34,10 +34,18 @@ export default function UsuarioForm({
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit?.(form);
-  };
+ const handleSubmit = (e) => {
+  e.preventDefault();
+
+  const payload = { ...form };
+
+  // se estiver editando e senha estiver vazia, não envia
+  if (usuarioEditando && !payload.senha) {
+    delete payload.senha;
+  }
+
+  onSubmit?.(payload);
+};
 
   return (
     <form onSubmit={handleSubmit}>

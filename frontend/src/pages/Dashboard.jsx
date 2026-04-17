@@ -45,6 +45,22 @@ export default function Dashboard() {
     );
   }
 
+  if (role === 'TECNICO') {
+    return (
+      <div>
+        <h2>Dashboard Tecnico</h2>
+        <p>Bem-vindo {user.nome}!</p>
+
+        <button onClick={() => navigate('/chamados-tecnico')}>
+          Ver Chamados
+        </button>
+
+        <hr />
+        <button onClick={handleLogout}>Sair</button>
+      </div>
+    );
+  }
+
   if (role === 'USER') {
     return (
       <div>

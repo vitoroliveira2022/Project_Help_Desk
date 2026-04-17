@@ -1,17 +1,20 @@
 // src/services/usuariosService.jsx
 import { api } from '../utils/api';
 
-// LISTAR
+
+// 📋 LISTAR (ADMIN)
 export const getUsuarios = () => {
   return api('/usuarios');
 };
 
-// BUSCAR POR ID
+
+// 🔎 BUSCAR POR ID
 export const getUsuarioById = (id) => {
   return api(`/usuarios/${id}`);
 };
 
-// CRIAR
+
+// 🟢 CRIAR USUÁRIO COMUM (USER)
 export const createUsuario = (data) => {
   return api('/usuarios', {
     method: 'POST',
@@ -19,7 +22,27 @@ export const createUsuario = (data) => {
   });
 };
 
-// ATUALIZAR
+
+// 🔵 CRIAR TÉCNICO (ADMIN)
+export const createTecnico = (data) => {
+  
+  return api('/usuarios/tecnicos', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
+
+
+// 🔴 CRIAR ADMIN (ADMIN)
+export const createUsuarioAdmin = (data) => {
+  return api('/usuarios/admin', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+};
+
+
+// ✏️ ATUALIZAR
 export const updateUsuario = (id, data) => {
   return api(`/usuarios/${id}`, {
     method: 'PATCH',
@@ -27,7 +50,8 @@ export const updateUsuario = (id, data) => {
   });
 };
 
-// DELETAR
+
+// 🗑️ DELETAR
 export const deleteUsuario = (id) => {
   return api(`/usuarios/${id}`, {
     method: 'DELETE',
