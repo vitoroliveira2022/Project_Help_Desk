@@ -35,10 +35,10 @@ export default function ListarChamados() {
     );
   }
 
+  console.log('Chamados carregados:', chamados);
   return (
     <div>
       <h2>Chamados</h2>
-
       <button
         onClick={() => navigate('/dashboard')}
         style={{ marginBottom: '1rem' }}
@@ -49,8 +49,16 @@ export default function ListarChamados() {
       <ul>
         {chamados.map((c) => (
           <li key={c.id}>
-            <strong>{c.titulo}</strong> - {c.descricao} ({c.status})
-
+            <p>ID do chamado: {c.id}</p>
+            <p>ID do usuário: {c.usuario.id}</p>
+            <p>Nome do usuario: {c.usuario.nome}</p>
+            <p><strong>Título: {c.titulo}</strong></p>
+            <p>Descrição: {c.descricao}</p>
+            <p>Situação: ({c.status})</p>
+            <p>Tecnico: {c.tecnico.nome}</p>
+            {c.solucoes && c.solucoes.length > 0 && (
+              <p>Solução: {c.solucoes[0].descricao}</p>      
+            )}
             <button onClick={() => navigate(`/editar/${c.id}`)}>
               Editar
             </button>

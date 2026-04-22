@@ -40,3 +40,10 @@ export const assumirChamado = (id) => {
     method: 'PATCH',
   });
 };
+
+export const criarSolucao = (chamadoId, descricao) => {
+  return api(`/chamados/${chamadoId}/solucoes`, {
+    method: 'POST',
+    body: JSON.stringify({ descricao }),
+  });
+};

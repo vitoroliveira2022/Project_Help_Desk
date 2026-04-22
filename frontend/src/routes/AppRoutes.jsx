@@ -16,6 +16,7 @@ import EditarUsuario from '../pages/EditarUsuario';
 import CadastrarTecnico from '../pages/CadastrarTecnico';
 import EditarTecnico from '../pages/EditarTecnico';
 import ChamadosTecnico from '../pages/ChamadosTecnico';
+import ChamadosResolvidos from '../pages/ChamadosResolvidos';
 
 export default function AppRoutes() {
   const { isAuthenticated, role, loading } = useAuthContext();
@@ -143,6 +144,15 @@ export default function AppRoutes() {
           element={
             <PrivateRoute allowedRoles={['TECNICO']}>
               <ChamadosTecnico />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chamados-resolvidos"
+          element={
+            <PrivateRoute allowedRoles={['TECNICO']}>
+              <ChamadosResolvidos />
             </PrivateRoute>
           }
         />

@@ -52,9 +52,12 @@ export default function Dashboard() {
         <p>Bem-vindo {user.nome}!</p>
 
         <button onClick={() => navigate('/chamados-tecnico')}>
-          Ver Chamados
+          Chamados Pendentes
         </button>
 
+       <button onClick={() => navigate('/chamados-resolvidos')}>
+          Chamados Resolvidos
+        </button>
         <hr />
         <button onClick={handleLogout}>Sair</button>
       </div>
