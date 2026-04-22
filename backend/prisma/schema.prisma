@@ -35,6 +35,9 @@ model Usuario {
 
   // chamados que ele atende (se for técnico)
   chamadosAtendidos Chamado[] @relation("TecnicoChamados")
+
+  // soluções feitas pelo técnico
+  solucoes Solucao[] @relation("TecnicoSolucoes")
 }
 
 model Chamado {
@@ -49,6 +52,21 @@ model Chamado {
   tecnicoId Int?
   tecnico   Usuario? @relation("TecnicoChamados", fields: [tecnicoId], references: [id])
 
+  solucoes Solucao[]
+
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
+}
+
+model Solucao {
+  id        Int    @id @default(autoincrement())
+  descricao String
+
+  chamadoId Int
+  chamado   Chamado @relation(fields: [chamadoId], references: [id])
+
+  tecnicoId Int
+  tecnico   Usuario @relation("TecnicoSolucoes", fields: [tecnicoId], references: [id])
+
+  criadoEm DateTime @default(now())
 }

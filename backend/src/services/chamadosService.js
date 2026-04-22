@@ -55,3 +55,8 @@ export const deletar = async (id) => {
   await repository.deletar(id);
   return true;
 };
+
+// CRIAR SOLUÇÃO
+export const criarSolucao = async (dados) => {
+  return repository.criarSolucao(dados);
+};

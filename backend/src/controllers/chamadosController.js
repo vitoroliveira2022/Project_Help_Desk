@@ -170,3 +170,60 @@ export const assumir = async (req, res) => {
     return res.status(500).json({ erro: 'Erro ao assumir chamado' });
   }
 };
+
+// CRIAR SOLUÇÃO
+export const criarSolucao = async (req, res) => {
+  try {
+    const usuario = req.usuario;
+
+    // apenas técnico
+    if (usuario.role !== 'TECNICO') {
+      return res.status(403).json({
+        erro: 'Apenas técnicos podem enviar solução'
+      });
+    }
+
+    const id = Number(req.params.id);
+    const { descricao } = req.body;
+
+    if (!descricao) {
+      return res.status(400).json({
+        erro: 'Descrição da solução é obrigatória'
+      });
+    }
+
+    const chamado = await service.buscarPorId(id);
+
+    if (!chamado) {
+      return res.status(404).json({
+        erro: 'Chamado não encontrado'
+      });
+    }
+
+    // opcional: garantir que só o técnico responsável responda
+    if (chamado.tecnicoId !== usuario.id) {
+      return res.status(403).json({
+        erro: 'Você não é o técnico responsável por este chamado'
+      });
+    }
+
+    const solucao = await service.criarSolucao({
+      descricao,
+      chamadoId: id,
+      tecnicoId: usuario.id
+    });
+
+    // finalizar chamado automaticamente
+    await service.atualizar(id, {
+      status: 'FINALIZADO'
+    });
+
+    return res.status(201).json(solucao);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      erro: 'Erro ao criar solução'
+    });
+  }
+};

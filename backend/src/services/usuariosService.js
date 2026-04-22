@@ -21,6 +21,12 @@ export const buscarPorId = async (id) => {
 
 // Criar usuário
 export const criar = async (dados) => {
+  const existente = await repository.buscarPorEmail(dados.email);
+
+  if (existente) {
+    throw new Error('EMAIL_JA_EXISTE');
+  }
+
   const { senha, ...resto } = dados;
 
   const hash = await bcrypt.hash(senha, 10);
@@ -33,14 +39,21 @@ export const criar = async (dados) => {
 
 // Atualizar usuário
 export const atualizar = async (id, dados) => {
-  
   const existe = await repository.buscarPorId(id);
 
   if (!existe) return null;
 
-  // se estiver atualizando senha, gerar hash
+  // verificar email duplicado
+  if (dados.email) {
+    const usuarioComEmail = await repository.buscarPorEmail(dados.email);
+
+    if (usuarioComEmail && usuarioComEmail.id !== id) {
+      throw new Error('EMAIL_JA_EXISTE');
+    }
+  }
+
+  // hash senha
   if (dados.senha) {
-    
     dados.senha = await bcrypt.hash(dados.senha, 10);
   }
 

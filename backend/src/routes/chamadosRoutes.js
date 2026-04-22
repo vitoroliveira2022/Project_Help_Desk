@@ -22,4 +22,6 @@ router.patch('/:id', auth, chamadosController.atualizar);
 // deletar
 router.delete('/:id', auth, chamadosController.deletar);
 
+router.post('/:id/solucoes', auth, chamadosController.criarSolucao);
+
 export default router;

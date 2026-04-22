@@ -16,6 +16,19 @@ const includeSeguro = {
       email: true,
       role: true
     }
+  },
+  solucoes: {
+    include: {
+      tecnico: {
+        select: {
+          id: true,
+          nome: true
+        }
+      }
+    },
+    orderBy: {
+      criadoEm: 'asc'
+    }
   }
 };
 
@@ -65,5 +78,15 @@ export const atualizar = (id, dados) => {
 export const deletar = (id) => {
   return prisma.chamado.delete({
     where: { id }
+  });
+};
+
+export const criarSolucao = (dados) => {
+  return prisma.solucao.create({
+    data: dados,
+    include: {
+      tecnico: true,
+      chamado: true
+    }
   });
 };

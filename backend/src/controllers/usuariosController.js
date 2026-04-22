@@ -115,6 +115,9 @@ export const criarUsuario = async (req, res) => {
     return res.status(201).json(usuario);
 
   } catch (err) {
+    if (err.message === 'EMAIL_JA_EXISTE') {
+      return res.status(400).json({ erro: 'Email já cadastrado' });
+    }
     console.error(err);
     return res.status(500).json({ erro: 'Erro ao criar usuário' });
   }
@@ -147,7 +150,10 @@ export const criarTecnico = async (req, res) => {
 
     return res.status(201).json(usuario);
 
-  } catch (err) {
+  }catch (err) {
+    if (err.message === 'EMAIL_JA_EXISTE') {
+      return res.status(400).json({ erro: 'Email já cadastrado' });
+    }
     console.error(err);
     return res.status(500).json({ erro: 'Erro ao criar técnico' });
   }
@@ -179,7 +185,11 @@ export const criarAdmin = async (req, res) => {
 
     return res.status(201).json(usuario);
 
-  } catch (err) {
+  }catch (err) {
+    if (err.message === 'EMAIL_JA_EXISTE') {
+      return res.status(400).json({ erro: 'Email já cadastrado' });
+    }
+
     console.error(err);
     return res.status(500).json({ erro: 'Erro ao criar admin' });
   }
