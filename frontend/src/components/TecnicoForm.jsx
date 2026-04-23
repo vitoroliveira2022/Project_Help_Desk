@@ -11,6 +11,7 @@ export default function TecnicoForm({
     senha: '',
   });
 
+  // 🔥 mais seguro: reage a objeto inteiro, não só id
   useEffect(() => {
     if (!tecnicoEditando) {
       setForm({ nome: '', email: '', senha: '' });
@@ -22,23 +23,37 @@ export default function TecnicoForm({
       email: tecnicoEditando.email || '',
       senha: '',
     });
-  }, [tecnicoEditando?.id]);
+  }, [tecnicoEditando]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit?.(form);
+
+    // 🔥 evita enviar senha vazia no update
+    const payload = {
+      nome: form.nome,
+      email: form.email,
+      ...(form.senha ? { senha: form.senha } : {}),
+    };
+
+    onSubmit?.(payload);
   };
 
+  const input =
+    'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400';
+
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>
+    <form onSubmit={handleSubmit} className="space-y-4">
+
+      <h3 className="text-xl font-bold mb-2">
         {tecnicoEditando ? 'Editar Técnico' : 'Novo Técnico'}
       </h3>
 
@@ -49,6 +64,7 @@ export default function TecnicoForm({
         onChange={handleChange}
         required
         disabled={disabled}
+        className={input}
       />
 
       <input
@@ -58,6 +74,7 @@ export default function TecnicoForm({
         onChange={handleChange}
         required
         disabled={disabled}
+        className={input}
       />
 
       <input
@@ -72,9 +89,14 @@ export default function TecnicoForm({
         onChange={handleChange}
         required={!tecnicoEditando}
         disabled={disabled}
+        className={input}
       />
 
-      <button type="submit" disabled={disabled}>
+      <button
+        type="submit"
+        disabled={disabled}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded transition disabled:opacity-50"
+      >
         {disabled
           ? 'Salvando...'
           : tecnicoEditando

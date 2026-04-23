@@ -7,8 +7,21 @@ export default function ChamadosResolvidos() {
   const { user } = useAuthContext();
   const navigate = useNavigate();
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>Erro: {error}</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500">Erro: {error}</p>
+      </div>
+    );
+  }
 
   const resolvidos = chamados.filter(
     (c) =>
@@ -16,35 +29,73 @@ export default function ChamadosResolvidos() {
       c.tecnicoId === user.id
   );
 
+  const card =
+    'bg-white p-4 rounded-lg shadow hover:shadow-md transition';
+
   return (
-    <div>
-      <h2>Chamados Resolvidos</h2>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-6xl mx-auto">
 
-      {resolvidos.length === 0 ? (
-        <p>Nenhum chamado resolvido</p>
-      ) : (
-        <ul>
-          {resolvidos.map((c) => (
-            <li key={c.id}>
-              <p>ID: {c.id}</p>
-              <p>Usuário: {c.usuario?.nome}</p>
-              <p>Técnico: {c.tecnico?.nome}</p>
-              <p><strong>{c.titulo}</strong></p>
-              <p>{c.descricao}</p>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold">
+            Chamados Resolvidos
+          </h2>
 
-              {c.solucoes?.[0] && (
-                <p>
-                  <strong>Solução:</strong> {c.solucoes[0].descricao}
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Voltar
+          </button>
+        </div>
+
+        {resolvidos.length === 0 ? (
+          <p className="text-gray-500">
+            Nenhum chamado resolvido
+          </p>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {resolvidos.map((c) => (
+              <div key={c.id} className={card}>
+                <p className="text-sm text-gray-500">
+                  ID: {c.id}
                 </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
 
-    <button onClick={() => navigate('/dashboard')}>
-        Voltar
-    </button>
+                <p className="text-sm text-gray-500">
+                  Usuário: {c.usuario?.nome}
+                </p>
+
+                <p className="text-sm text-gray-500">
+                  Técnico: {c.tecnico?.nome}
+                </p>
+
+                <h4 className="font-bold mt-2">
+                  {c.titulo}
+                </h4>
+
+                <p className="text-gray-600 text-sm mt-1">
+                  {c.descricao}
+                </p>
+
+                <span className="inline-block mt-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                  Finalizado
+                </span>
+
+                {c.solucoes?.[0] && (
+                  <div className="mt-3 bg-gray-50 border rounded p-2">
+                    <p className="text-xs text-gray-500">
+                      Solução:
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      {c.solucoes[0].descricao}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

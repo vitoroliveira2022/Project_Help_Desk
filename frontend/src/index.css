@@ -1,5 +1,6 @@
+@import "tailwindcss"; /* importo aqui e posso usar em qualquer lugar da app*/
+
 *{
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  margin: 0;
 }

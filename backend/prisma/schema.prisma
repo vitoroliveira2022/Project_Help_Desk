@@ -63,7 +63,7 @@ model Solucao {
   descricao String
 
   chamadoId Int
-  chamado   Chamado @relation(fields: [chamadoId], references: [id])
+  chamado   Chamado @relation(fields: [chamadoId], references: [id], onDelete: Cascade)
 
   tecnicoId Int
   tecnico   Usuario @relation("TecnicoSolucoes", fields: [tecnicoId], references: [id])

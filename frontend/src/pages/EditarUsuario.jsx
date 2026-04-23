@@ -42,21 +42,50 @@ export default function EditarUsuario() {
     }
   };
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-600">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button
+            onClick={() => navigate('/gerenciar-usuarios')}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Voltar
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Editar Usuário</h2>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
 
-      <UsuarioForm
-        onSubmit={handleSubmit}
-        usuarioEditando={usuario}
-      />
+        <h2 className="text-2xl font-bold mb-4">
+          Editar Usuário
+        </h2>
 
-      <button onClick={() => navigate('/gerenciar-usuarios')}>
-        Voltar
-      </button>
+        <UsuarioForm
+          onSubmit={handleSubmit}
+          usuarioEditando={usuario}
+        />
+
+        <button
+          onClick={() => navigate('/gerenciar-usuarios')}
+          className="mt-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+        >
+          Voltar
+        </button>
+      </div>
     </div>
   );
 }

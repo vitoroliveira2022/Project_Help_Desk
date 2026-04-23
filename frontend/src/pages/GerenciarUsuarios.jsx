@@ -35,9 +35,7 @@ export default function GerenciarUsuarios() {
 
     try {
       setDeletandoId(id);
-
       await deleteUsuario(id);
-
       setUsuarios((prev) => prev.filter((u) => u.id !== id));
     } catch (err) {
       console.error(err);
@@ -47,69 +45,93 @@ export default function GerenciarUsuarios() {
     }
   };
 
-  if (loading) return <p>Carregando usuários...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Carregando usuários...</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Gerenciar Usuários</h2>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow">
 
-      <div style={{ marginBottom: '10px' }}>
-        <button onClick={() => navigate('/usuarios/novo')}>
-          Novo Usuário
-        </button>
+        <h2 className="text-2xl font-bold mb-4">
+          Gerenciar Usuários
+        </h2>
 
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={{ marginLeft: '10px' }}
-        >
-          Voltar para Dashboard
-        </button>
-      </div>
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => navigate('/usuarios/novo')}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Novo Usuário
+          </button>
 
-      <table border="1" cellPadding="8">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Voltar
+          </button>
+        </div>
 
-        <tbody>
-          {usuarios.length === 0 ? (
-            <tr>
-              <td colSpan="5">Nenhum usuário encontrado</td>
-            </tr>
-          ) : (
-            usuarios.map((u) => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.nome}</td>
-                <td>{u.email}</td>
-                <td>{u.role}</td>
-
-                <td>
-                  <button
-                    onClick={() => navigate(`/usuarios/editar/${u.id}`)}
-                  >
-                    Editar
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(u.id)}
-                    disabled={deletandoId === u.id}
-                    style={{ marginLeft: '5px' }}
-                  >
-                    {deletandoId === u.id ? 'Deletando...' : 'Deletar'}
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+            <thead className="bg-gray-200 text-gray-700">
+              <tr>
+                <th className="text-left p-3">ID</th>
+                <th className="text-left p-3">Nome</th>
+                <th className="text-left p-3">Email</th>
+                <th className="text-left p-3">Role</th>
+                <th className="text-left p-3">Ações</th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+
+            <tbody>
+              {usuarios.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center p-4 text-gray-500">
+                    Nenhum usuário encontrado
+                  </td>
+                </tr>
+              ) : (
+                usuarios.map((u) => (
+                  <tr
+                    key={u.id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="p-3">{u.id}</td>
+                    <td className="p-3">{u.nome}</td>
+                    <td className="p-3">{u.email}</td>
+                    <td className="p-3">{u.role}</td>
+
+                    <td className="p-3 flex gap-2">
+                      <button
+                        onClick={() => navigate(`/usuarios/editar/${u.id}`)}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(u.id)}
+                        disabled={deletandoId === u.id}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+                      >
+                        {deletandoId === u.id
+                          ? 'Deletando...'
+                          : 'Deletar'}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

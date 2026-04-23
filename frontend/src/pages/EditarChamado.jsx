@@ -22,7 +22,10 @@ export default function EditarChamado() {
         const chamado = await buscarChamadoPorId(id);
         setData(chamado);
       } catch (err) {
-        setError('Erro ao carregar chamado: ' + (err.message || 'tente novamente'));
+        setError(
+          'Erro ao carregar chamado: ' +
+            (err.message || 'tente novamente')
+        );
       } finally {
         setLoading(false);
       }
@@ -39,34 +42,74 @@ export default function EditarChamado() {
       await atualizarChamado(id, form);
       navigate('/chamados');
     } catch (err) {
-      setError('Erro ao atualizar chamado: ' + (err.message || 'tente novamente'));
+      setError(
+        'Erro ao atualizar chamado: ' +
+          (err.message || 'tente novamente')
+      );
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <p>Carregando chamado...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (!data) return <p>Chamado não encontrado</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-600">Carregando chamado...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button
+            onClick={() => navigate('/chamados')}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Voltar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">Chamado não encontrado</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Editar Chamado</h2>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow">
 
-      <button
-        onClick={() => navigate('/dashboard')}
-        style={{ marginBottom: '1rem' }}
-      >
-        Voltar para Dashboard
-      </button>
+        <h2 className="text-2xl font-bold mb-4">
+          Editar Chamado
+        </h2>
 
-      <ChamadoForm
-        initialData={data}
-        onSubmit={handleSubmit}
-        disabled={saving}
-      />
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="mb-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+        >
+          Voltar para Dashboard
+        </button>
 
-      {saving && <p>Salvando alterações...</p>}
+        <ChamadoForm
+          initialData={data}
+          onSubmit={handleSubmit}
+          disabled={saving}
+        />
+
+        {saving && (
+          <p className="mt-4 text-blue-500">
+            Salvando alterações...
+          </p>
+        )}
+      </div>
     </div>
   );
 }

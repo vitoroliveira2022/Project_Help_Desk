@@ -11,7 +11,7 @@ export default function UsuarioForm({
     senha: '',
   });
 
-  // só carrega quando muda o ID do usuário
+  // 🔥 reage corretamente quando muda o usuário
   useEffect(() => {
     if (!usuarioEditando) {
       setForm({ nome: '', email: '', senha: '' });
@@ -23,7 +23,7 @@ export default function UsuarioForm({
       email: usuarioEditando.email || '',
       senha: '',
     });
-  }, [usuarioEditando?.id]);
+  }, [usuarioEditando]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,22 +34,26 @@ export default function UsuarioForm({
     }));
   };
 
- const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const payload = { ...form };
+    const payload = { ...form };
 
-  // se estiver editando e senha estiver vazia, não envia
-  if (usuarioEditando && !payload.senha) {
-    delete payload.senha;
-  }
+    // 🔥 não envia senha vazia no edit
+    if (usuarioEditando && !payload.senha) {
+      delete payload.senha;
+    }
 
-  onSubmit?.(payload);
-};
+    onSubmit?.(payload);
+  };
+
+  const input =
+    'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400';
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>
+    <form onSubmit={handleSubmit} className="space-y-4">
+
+      <h3 className="text-xl font-bold mb-2">
         {usuarioEditando ? 'Editar Usuário' : 'Novo Usuário'}
       </h3>
 
@@ -60,6 +64,7 @@ export default function UsuarioForm({
         onChange={handleChange}
         required
         disabled={disabled}
+        className={input}
       />
 
       <input
@@ -69,21 +74,29 @@ export default function UsuarioForm({
         onChange={handleChange}
         required
         disabled={disabled}
+        className={input}
       />
 
       <input
         name="senha"
         type="password"
         placeholder={
-          usuarioEditando ? 'Nova senha (opcional)' : 'Senha'
+          usuarioEditando
+            ? 'Nova senha (opcional)'
+            : 'Senha'
         }
         value={form.senha}
         onChange={handleChange}
         required={!usuarioEditando}
         disabled={disabled}
+        className={input}
       />
 
-      <button type="submit" disabled={disabled}>
+      <button
+        type="submit"
+        disabled={disabled}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded transition disabled:opacity-50"
+      >
         {disabled
           ? 'Salvando...'
           : usuarioEditando

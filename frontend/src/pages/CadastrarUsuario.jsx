@@ -25,22 +25,32 @@ export default function CadastrarUsuario() {
   };
 
   return (
-    <div>
-      <h2>Novo Usuário</h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="bg-white w-full max-w-xl p-6 rounded-xl shadow">
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        <h2 className="text-2xl font-bold mb-4">
+          Novo Usuário
+        </h2>
 
-      <UsuarioForm
-        onSubmit={handleSubmit}
-        disabled={loading}
-      />
+        {error && (
+          <p className="mb-4 text-red-500 text-sm">
+            {error}
+          </p>
+        )}
 
-      <button
-        onClick={() => navigate('/gerenciar-usuarios')}
-        disabled={loading}
-      >
-        {loading ? 'Salvando...' : 'Voltar'}
-      </button>
+        <UsuarioForm
+          onSubmit={handleSubmit}
+          disabled={loading}
+        />
+
+        <button
+          onClick={() => navigate('/gerenciar-usuarios')}
+          disabled={loading}
+          className="mt-4 w-full bg-gray-500 hover:bg-gray-600 text-white py-2 rounded transition disabled:opacity-50"
+        >
+          {loading ? 'Salvando...' : 'Voltar'}
+        </button>
+      </div>
     </div>
   );
 }

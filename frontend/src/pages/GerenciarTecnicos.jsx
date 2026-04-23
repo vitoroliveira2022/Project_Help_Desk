@@ -12,11 +12,11 @@ export default function GerenciarTecnicos() {
   const carregar = async () => {
     try {
       setLoading(true);
-
       const data = await getUsuarios();
 
-      // 🔥 filtra só técnicos
-      const apenasTecnicos = data.filter((u) => u.role === 'TECNICO');
+      const apenasTecnicos = data.filter(
+        (u) => u.role === 'TECNICO'
+      );
 
       setTecnicos(apenasTecnicos);
     } catch (err) {
@@ -37,9 +37,7 @@ export default function GerenciarTecnicos() {
 
     try {
       setDeletandoId(id);
-
       await deleteUsuario(id);
-
       setTecnicos((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
       console.error(err);
@@ -49,62 +47,93 @@ export default function GerenciarTecnicos() {
     }
   };
 
-  if (loading) return <p>Carregando...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-600">Carregando...</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Gerenciar Técnicos</h2>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow">
 
-      <div style={{ marginBottom: '10px' }}>
-        <button onClick={() => navigate('/tecnicos/novo')}>
-          Novo Técnico
-        </button>
+        <h2 className="text-2xl font-bold mb-4">
+          Gerenciar Técnicos
+        </h2>
 
-        <button onClick={() => navigate('/dashboard')} style={{ marginLeft: '10px' }}>
-          Voltar para Dashboard
-        </button>
-      </div>
+        <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => navigate('/tecnicos/novo')}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Novo Técnico
+          </button>
 
-      <table border="1" cellPadding="8">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Voltar
+          </button>
+        </div>
 
-        <tbody>
-          {tecnicos.length === 0 ? (
-            <tr>
-              <td colSpan="4">Nenhum técnico encontrado</td>
-            </tr>
-          ) : (
-            tecnicos.map((t) => (
-              <tr key={t.id}>
-                <td>{t.id}</td>
-                <td>{t.nome}</td>
-                <td>{t.email}</td>
-
-                <td>
-                  <button onClick={() => navigate(`/tecnicos/editar/${t.id}`)}>
-                    Editar
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(t.id)}
-                    disabled={deletandoId === t.id}
-                    style={{ marginLeft: '5px' }}
-                  >
-                    {deletandoId === t.id ? 'Deletando...' : 'Deletar'}
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+            <thead className="bg-gray-200 text-gray-700">
+              <tr>
+                <th className="text-left p-3">ID</th>
+                <th className="text-left p-3">Nome</th>
+                <th className="text-left p-3">Email</th>
+                <th className="text-left p-3">Ações</th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+
+            <tbody>
+              {tecnicos.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="text-center p-4 text-gray-500">
+                    Nenhum técnico encontrado
+                  </td>
+                </tr>
+              ) : (
+                tecnicos.map((t) => (
+                  <tr
+                    key={t.id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="p-3">{t.id}</td>
+                    <td className="p-3">{t.nome}</td>
+                    <td className="p-3">{t.email}</td>
+
+                    <td className="p-3 flex gap-2">
+                      <button
+                        onClick={() =>
+                          navigate(`/tecnicos/editar/${t.id}`)
+                        }
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(t.id)}
+                        disabled={deletandoId === t.id}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+                      >
+                        {deletandoId === t.id
+                          ? 'Deletando...'
+                          : 'Deletar'}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

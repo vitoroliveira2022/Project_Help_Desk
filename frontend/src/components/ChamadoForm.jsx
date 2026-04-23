@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export default function ChamadoForm({
   onSubmit,
-  initialData = {},
+  initialData = null,
   disabled = false,
 }) {
   const [data, setData] = useState({
@@ -10,6 +10,7 @@ export default function ChamadoForm({
     descricao: "",
   });
 
+  // 🔥 agora reage corretamente a mudanças de initialData
   useEffect(() => {
     if (!initialData) return;
 
@@ -17,11 +18,15 @@ export default function ChamadoForm({
       titulo: initialData.titulo || "",
       descricao: initialData.descricao || "",
     });
-  }, []);
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setData((prev) => ({ ...prev, [name]: value }));
+
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -29,27 +34,42 @@ export default function ChamadoForm({
     onSubmit?.(data);
   };
 
+  const input =
+    "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400";
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        name="titulo"
-        value={data.titulo}
-        onChange={handleChange}
-        placeholder="Título"
-        required
-        disabled={disabled}
-      />
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-4 space-y-4">
 
-      <textarea
-        name="descricao"
-        value={data.descricao}
-        onChange={handleChange}
-        placeholder="Descrição"
-        required
-        disabled={disabled}
-      />
+      <div>
+        <input
+          name="titulo"
+          value={data.titulo}
+          onChange={handleChange}
+          placeholder="Título"
+          required
+          disabled={disabled}
+          className={input}
+        />
+      </div>
 
-      <button type="submit" disabled={disabled}>
+      <div>
+        <textarea
+          name="descricao"
+          value={data.descricao}
+          onChange={handleChange}
+          placeholder="Descrição"
+          required
+          disabled={disabled}
+          rows={5}
+          className={input}
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={disabled}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded transition disabled:opacity-50"
+      >
         {disabled ? "Salvando..." : "Salvar"}
       </button>
     </form>

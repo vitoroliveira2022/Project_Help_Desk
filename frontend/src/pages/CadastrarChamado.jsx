@@ -21,36 +21,58 @@ export default function CadastrarChamado() {
 
       setSuccess(true);
 
-      // pequeno delay melhora UX (usuário percebe sucesso)
       setTimeout(() => {
         navigate('/chamados');
       }, 800);
-
     } catch (err) {
-      setError('Erro ao cadastrar chamado: ' + (err.message || 'tente novamente'));
+      setError(
+        'Erro ao cadastrar chamado: ' +
+          (err.message || 'tente novamente')
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2>Abrir Novo Chamado</h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="bg-white w-full max-w-2xl p-6 rounded-xl shadow">
 
-      <button
-        onClick={() => navigate('/dashboard')}
-        style={{ marginBottom: '1rem' }}
-        disabled={loading}
-      >
-        Voltar para Dashboard
-      </button>
+        <h2 className="text-2xl font-bold mb-4">
+          Abrir Novo Chamado
+        </h2>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>Chamado criado com sucesso!</p>}
+        <button
+          onClick={() => navigate('/dashboard')}
+          disabled={loading}
+          className="mb-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition disabled:opacity-50"
+        >
+          Voltar para Dashboard
+        </button>
 
-      <ChamadoForm onSubmit={handleSubmit} disabled={loading} />
+        {error && (
+          <p className="mb-3 text-red-500 text-sm">
+            {error}
+          </p>
+        )}
 
-      {loading && <p>Enviando chamado...</p>}
+        {success && (
+          <p className="mb-3 text-green-600 text-sm">
+            Chamado criado com sucesso!
+          </p>
+        )}
+
+        <ChamadoForm
+          onSubmit={handleSubmit}
+          disabled={loading}
+        />
+
+        {loading && (
+          <p className="mt-4 text-blue-500 text-sm">
+            Enviando chamado...
+          </p>
+        )}
+      </div>
     </div>
   );
 }

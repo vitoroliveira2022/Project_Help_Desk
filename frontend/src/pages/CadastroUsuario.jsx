@@ -30,33 +30,64 @@ export default function CadastroUsuario() {
     }
   };
 
+  const input =
+    'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400';
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Nome"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          Cadastro de Usuário
+        </h2>
 
-      <input
-        type="password"
-        placeholder="Senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-      />
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+          <input
+            className={input}
+            placeholder="Nome"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
 
-      <button type="submit" disabled={loading}>
-        {loading ? 'Cadastrando...' : 'Cadastrar'}
-      </button>
-    </form>
+          <input
+            type="email"
+            className={input}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            className={input}
+            placeholder="Senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
+
+          {error && (
+            <p className="text-red-500 text-sm">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded transition disabled:opacity-50"
+          >
+            {loading ? 'Cadastrando...' : 'Cadastrar'}
+          </button>
+        </form>
+
+        <button
+          onClick={() => navigate('/login')}
+          className="mt-4 w-full text-sm text-gray-500 hover:underline"
+        >
+          Já tem conta? Fazer login
+        </button>
+      </div>
+    </div>
   );
 }
