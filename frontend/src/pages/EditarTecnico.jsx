@@ -72,7 +72,7 @@ export default function EditarTecnico() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
+      <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow flex flex-col gap-6">
 
         <h2 className="text-2xl font-bold mb-4">
           Editar Técnico

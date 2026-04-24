@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useChamadosContext } from '../context/ChamadosContext';
 import { useAuthContext } from '../context/AuthContext';
 import { assumirChamado, criarSolucao } from '../services/chamadosService';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function ChamadosTecnico() {
   const { chamados, loading, error, buscarChamados } = useChamadosContext();
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+
   const [solucoes, setSolucoes] = useState({});
 
   const handleSolucaoChange = (id, value) => {
@@ -73,36 +76,42 @@ export default function ChamadosTecnico() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto flex flex-col gap-6">
 
-        <h2 className="text-3xl font-bold mb-6">
-          Área do Técnico
-        </h2>
+        {/* HEADER (igual padrão resolvidos) */}
+        <div className="flex justify-start items-center mb-6 gap-4">
+          <h2 className="text-3xl font-bold">
+            Área do Técnico
+          </h2>
 
-        {/* Chamados disponíveis */}
-        <h3 className="text-xl font-semibold mb-3">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Voltar
+          </button>
+        </div>
+
+        {/* ================= DISPONÍVEIS ================= */}
+        <h3 className="text-xl font-semibold">
           Chamados Disponíveis
         </h3>
 
         {chamadosDisponiveis.length === 0 ? (
-          <p className="text-gray-500 mb-6">
+          <p className="text-gray-500">
             Nenhum chamado disponível
           </p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {chamadosDisponiveis.map((c) => (
               <div key={c.id} className={card}>
-                <p className="text-sm text-gray-500">
-                  ID: {c.id}
-                </p>
+                <p className="text-sm text-gray-500">ID: {c.id}</p>
 
                 <p className="text-sm text-gray-500">
-                  Usuário: {c.usuario.nome}
+                  Usuário: {c.usuario?.nome}
                 </p>
 
-                <h4 className="font-bold mt-2">
-                  {c.titulo}
-                </h4>
+                <h4 className="font-bold mt-2">{c.titulo}</h4>
 
                 <p className="text-gray-600 text-sm mt-1">
                   {c.descricao}
@@ -123,8 +132,8 @@ export default function ChamadosTecnico() {
           </div>
         )}
 
-        {/* Meus chamados */}
-        <h3 className="text-xl font-semibold mb-3">
+        {/* ================= MEUS CHAMADOS ================= */}
+        <h3 className="text-xl font-semibold">
           Meus Chamados
         </h3>
 
@@ -136,17 +145,13 @@ export default function ChamadosTecnico() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {meusChamados.map((c) => (
               <div key={c.id} className={card}>
-                <p className="text-sm text-gray-500">
-                  ID: {c.id}
-                </p>
+                <p className="text-sm text-gray-500">ID: {c.id}</p>
 
                 <p className="text-sm text-gray-500">
-                  Usuário: {c.usuario.nome}
+                  Usuário: {c.usuario?.nome}
                 </p>
 
-                <h4 className="font-bold mt-2">
-                  {c.titulo}
-                </h4>
+                <h4 className="font-bold mt-2">{c.titulo}</h4>
 
                 <p className="text-gray-600 text-sm mt-1">
                   {c.descricao}
@@ -175,6 +180,7 @@ export default function ChamadosTecnico() {
             ))}
           </div>
         )}
+
       </div>
     </div>
   );

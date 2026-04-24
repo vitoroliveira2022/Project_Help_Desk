@@ -34,9 +34,9 @@ export default function ChamadosResolvidos() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto flex flex-col gap-6">
 
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-start items-center mb-6 gap-4">
           <h2 className="text-3xl font-bold">
             Chamados Resolvidos
           </h2>

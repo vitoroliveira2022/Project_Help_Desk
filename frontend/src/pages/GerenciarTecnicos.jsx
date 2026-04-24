@@ -57,7 +57,7 @@ export default function GerenciarTecnicos() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow">
+      <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow flex flex-col gap-4">
 
         <h2 className="text-2xl font-bold mb-4">
           Gerenciar Técnicos
@@ -79,7 +79,47 @@ export default function GerenciarTecnicos() {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* ================= MOBILE (CARDS) ================= */}
+        <div className="md:hidden space-y-3">
+          {tecnicos.length === 0 ? (
+            <p className="text-center text-gray-500">
+              Nenhum técnico encontrado
+            </p>
+          ) : (
+            tecnicos.map((t) => (
+              <div
+                key={t.id}
+                className="bg-gray-50 p-4 rounded-lg shadow"
+              >
+                <p className="text-xs text-gray-500">ID: {t.id}</p>
+                <p className="font-semibold">{t.nome}</p>
+                <p className="text-sm text-gray-600">{t.email}</p>
+
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() =>
+                      navigate(`/tecnicos/editar/${t.id}`)
+                    }
+                    className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(t.id)}
+                    disabled={deletandoId === t.id}
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+                  >
+                    {deletandoId === t.id ? '...' : 'Deletar'}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* ================= DESKTOP (TABELA) ================= */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <thead className="bg-gray-200 text-gray-700">
               <tr>
@@ -93,7 +133,10 @@ export default function GerenciarTecnicos() {
             <tbody>
               {tecnicos.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="text-center p-4 text-gray-500">
+                  <td
+                    colSpan="4"
+                    className="text-center p-4 text-gray-500"
+                  >
                     Nenhum técnico encontrado
                   </td>
                 </tr>
@@ -133,6 +176,7 @@ export default function GerenciarTecnicos() {
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   );

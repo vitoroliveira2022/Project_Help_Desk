@@ -51,7 +51,7 @@ export default function UsuarioForm({
     'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
 
       <h3 className="text-xl font-bold mb-2">
         {usuarioEditando ? 'Editar Usuário' : 'Novo Usuário'}

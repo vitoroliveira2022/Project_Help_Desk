@@ -5,7 +5,7 @@ export default function ErrorPage({ mensagem = 'Erro inesperado' }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
+      <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center flex flex-col gap-6">
 
         <h2 className="text-2xl font-bold text-red-500 mb-2">
           Algo deu errado!
