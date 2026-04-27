@@ -2,28 +2,37 @@ import * as service from '../services/usuariosService.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+// Controller de usuários
+// Responsável por autenticação, cadastro e gerenciamento de usuários
+// com controle de permissão por role (ADMIN, TECNICO, USER)
+
 
 // 🔐 LOGIN (público)
+// valida email e senha, gera token JWT e retorna dados do usuário
 export const login = async (req, res) => {
   try {
     const { email, senha } = req.body;
 
+    // valida campos obrigatórios
     if (!email || !senha) {
       return res.status(400).json({ erro: 'email e senha são obrigatórios' });
     }
 
+    // busca usuário pelo email
     const usuario = await service.buscarPorEmail(email);
 
     if (!usuario) {
       return res.status(401).json({ erro: 'Credenciais inválidas' });
     }
 
+    // compara senha enviada com hash do banco
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
     if (!senhaValida) {
       return res.status(401).json({ erro: 'Credenciais inválidas' });
     }
 
+    // gera token JWT
     const token = jwt.sign(
       {
         id: usuario.id,
@@ -33,6 +42,7 @@ export const login = async (req, res) => {
       { expiresIn: '1d' }
     );
 
+    // retorna token + dados do usuário
     return res.json({
       token,
       usuario: {
@@ -50,8 +60,8 @@ export const login = async (req, res) => {
 };
 
 
-
-// 📋 LISTAR (somente ADMIN)
+// 📋 LISTAR USUÁRIOS
+// somente ADMIN pode listar todos
 export const listar = async (req, res) => {
   try {
     if (req.usuario?.role !== 'ADMIN') {
@@ -68,12 +78,14 @@ export const listar = async (req, res) => {
 };
 
 
-
-// 🔎 BUSCAR POR ID (ADMIN ou próprio usuário)
+// 🔎 BUSCAR USUÁRIO POR ID
+// ADMIN pode ver qualquer usuário
+// usuário pode ver apenas o próprio perfil
 export const buscarPorId = async (req, res) => {
   try {
     const id = Number(req.params.id);
 
+    // verifica permissão
     if (req.usuario?.role !== 'ADMIN' && req.usuario?.id !== id) {
       return res.status(403).json({ erro: 'Sem permissão' });
     }
@@ -93,12 +105,13 @@ export const buscarPorId = async (req, res) => {
 };
 
 
-
-// ➕ USER (cadastro público)
+// ➕ CRIAR USUÁRIO (cadastro público)
+// cria usuário com role USER
 export const criarUsuario = async (req, res) => {
   try {
     const { nome, email, senha } = req.body;
 
+    // valida campos obrigatórios
     if (!nome || !email || !senha) {
       return res.status(400).json({
         erro: 'nome, email e senha são obrigatórios'
@@ -124,8 +137,8 @@ export const criarUsuario = async (req, res) => {
 };
 
 
-
-// 🛠️ TECNICO (somente ADMIN cria)
+// 🛠️ CRIAR TÉCNICO
+// somente ADMIN pode criar técnico
 export const criarTecnico = async (req, res) => {
 
   try {
@@ -150,7 +163,7 @@ export const criarTecnico = async (req, res) => {
 
     return res.status(201).json(usuario);
 
-  }catch (err) {
+  } catch (err) {
     if (err.message === 'EMAIL_JA_EXISTE') {
       return res.status(400).json({ erro: 'Email já cadastrado' });
     }
@@ -160,8 +173,8 @@ export const criarTecnico = async (req, res) => {
 };
 
 
-
-// 🛡️ ADMIN (somente ADMIN cria outro ADMIN)
+// 🛡️ CRIAR ADMIN
+// somente ADMIN pode criar outro ADMIN
 export const criarAdmin = async (req, res) => {
   try {
     if (req.usuario?.role !== 'ADMIN') {
@@ -185,7 +198,7 @@ export const criarAdmin = async (req, res) => {
 
     return res.status(201).json(usuario);
 
-  }catch (err) {
+  } catch (err) {
     if (err.message === 'EMAIL_JA_EXISTE') {
       return res.status(400).json({ erro: 'Email já cadastrado' });
     }
@@ -196,16 +209,20 @@ export const criarAdmin = async (req, res) => {
 };
 
 
-
-// ✏️ ATUALIZAR
+// ✏️ ATUALIZAR USUÁRIO
+// ADMIN pode atualizar qualquer usuário
+// usuário pode atualizar apenas o próprio
+// role não pode ser alterada por aqui
 export const atualizar = async (req, res) => {
   try {
     const id = Number(req.params.id);
 
+    // verifica permissão
     if (req.usuario?.role !== 'ADMIN' && req.usuario?.id !== id) {
       return res.status(403).json({ erro: 'Sem permissão' });
     }
 
+    // impede alteração de role
     const { role, ...dados } = req.body;
 
     const usuario = await service.atualizar(id, dados);
@@ -223,8 +240,8 @@ export const atualizar = async (req, res) => {
 };
 
 
-
-// 🗑️ DELETAR (somente ADMIN)
+// 🗑️ DELETAR USUÁRIO
+// somente ADMIN pode deletar
 export const deletar = async (req, res) => {
   try {
     if (req.usuario?.role !== 'ADMIN') {

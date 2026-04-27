@@ -21,7 +21,6 @@ app.use(express.json());
 
 // Define que todas as rotas que começam com '/chamados' serão tratadas no arquivo chamadosRoutes
 // Define que todas as rotas que começam com '/usuarios' serão tratadas no arquivo usuariosRoutes
-// Define que todas as rotas que começam com '/tecnicos' serão tratadas no arquivo tecnicosRoutes
 app.use('/chamados', chamadosRoutes);
 app.use('/usuarios', usuariosRoutes);
 

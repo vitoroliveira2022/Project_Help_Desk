@@ -1,12 +1,15 @@
 import { prisma } from '../config/prisma.js';
 
+// select padrão seguro
+// evita retornar senha e outros campos sensíveis
+// inclui também chamados criados pelo usuário
 const selectSeguro = {
   id: true,
   nome: true,
   email: true,
   role: true,
 
-  // relação correta do seu schema
+  // relação: chamados criados pelo usuário
   chamadosCriados: {
     select: {
       id: true,
@@ -20,6 +23,10 @@ const selectSeguro = {
   }
 };
 
+
+// LISTAR TODOS OS USUÁRIOS
+// ordena por ID crescente
+// retorna apenas campos seguros
 export const listar = () => {
   return prisma.usuario.findMany({
     orderBy: { id: 'asc' },
@@ -27,6 +34,9 @@ export const listar = () => {
   });
 };
 
+
+// BUSCAR USUÁRIO POR ID
+// retorna dados do usuário + chamados criados
 export const buscarPorId = (id) => {
   return prisma.usuario.findUnique({
     where: { id },
@@ -34,6 +44,9 @@ export const buscarPorId = (id) => {
   });
 };
 
+
+// CRIAR USUÁRIO
+// retorna apenas dados básicos (sem senha)
 export const criar = (dados) => {
   return prisma.usuario.create({
     data: dados,
@@ -46,6 +59,9 @@ export const criar = (dados) => {
   });
 };
 
+
+// ATUALIZAR USUÁRIO
+// retorna dados atualizados sem senha
 export const atualizar = (id, dados) => {
   return prisma.usuario.update({
     where: { id },
@@ -59,12 +75,17 @@ export const atualizar = (id, dados) => {
   });
 };
 
+
+// DELETAR USUÁRIO
 export const deletar = (id) => {
   return prisma.usuario.delete({
     where: { id }
   });
 };
 
+
+// BUSCAR USUÁRIO POR EMAIL
+// usado no login (precisa retornar senha)
 export const buscarPorEmail = (email) => {
   return prisma.usuario.findUnique({
     where: { email }

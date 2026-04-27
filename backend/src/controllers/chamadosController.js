@@ -1,6 +1,12 @@
 import * as service from '../services/chamadosService.js';
 
-// LISTAR
+// Controller de chamados
+// Cada função abaixo recebe a requisição HTTP,
+// valida permissões e chama o service correspondente.
+
+// LISTAR CHAMADOS
+// ADMIN e TECNICO veem todos
+// USER vê apenas seus próprios chamados
 export const listar = async (req, res) => {
   try {
     const usuario = req.usuario;
@@ -19,7 +25,9 @@ export const listar = async (req, res) => {
   }
 };
 
-// BUSCAR POR ID
+// BUSCAR CHAMADO POR ID
+// ADMIN e TECNICO podem ver qualquer um
+// USER só pode ver o próprio chamado
 export const buscarPorId = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -27,6 +35,7 @@ export const buscarPorId = async (req, res) => {
 
     const chamado = await service.buscarPorId(id);
 
+    // verifica se existe e se o usuário tem permissão
     if (
       !chamado ||
       (
@@ -45,11 +54,13 @@ export const buscarPorId = async (req, res) => {
   }
 };
 
-// CRIAR
+// CRIAR CHAMADO
+// usuário autenticado cria chamado vinculado ao seu ID
 export const criar = async (req, res) => {
   try {
     const { titulo, descricao } = req.body;
 
+    // valida campos obrigatórios
     if (!titulo || !descricao) {
       return res.status(400).json({
         erro: 'titulo e descricao são obrigatórios'
@@ -71,7 +82,10 @@ export const criar = async (req, res) => {
   }
 };
 
-// ATUALIZAR
+// ATUALIZAR CHAMADO
+// ADMIN pode atualizar qualquer um
+// usuário dono pode atualizar
+// técnico responsável pode atualizar
 export const atualizar = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -88,6 +102,7 @@ export const atualizar = async (req, res) => {
       chamado.usuarioId === usuario.id ||
       chamado.tecnicoId === usuario.id;
 
+    // verifica permissão
     if (!podeAtualizar) {
       return res.status(403).json({
         erro: 'Sem permissão para atualizar este chamado'
@@ -104,7 +119,9 @@ export const atualizar = async (req, res) => {
   }
 };
 
-// DELETAR
+// DELETAR CHAMADO
+// ADMIN pode deletar qualquer um
+// usuário dono pode deletar
 export const deletar = async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -120,6 +137,7 @@ export const deletar = async (req, res) => {
       usuario.role === 'ADMIN' ||
       chamado.usuarioId === usuario.id;
 
+    // verifica permissão
     if (!podeDeletar) {
       return res.status(403).json({
         erro: 'Sem permissão para deletar este chamado'
@@ -136,11 +154,14 @@ export const deletar = async (req, res) => {
   }
 };
 
-// ASSUMIR CHAMADO
+// TÉCNICO ASSUME CHAMADO
+// apenas técnico pode assumir
+// chamado não pode já estar em atendimento
 export const assumir = async (req, res) => {
   try {
     const usuario = req.usuario;
 
+    // apenas técnicos
     if (usuario.role !== 'TECNICO') {
       return res.status(403).json({
         erro: 'Apenas técnicos podem assumir chamados'
@@ -155,6 +176,7 @@ export const assumir = async (req, res) => {
       return res.status(404).json({ erro: 'Chamado não encontrado' });
     }
 
+    // não pode assumir se já tiver técnico
     if (existente.tecnicoId) {
       return res.status(400).json({
         erro: 'Chamado já está em atendimento'
@@ -171,7 +193,9 @@ export const assumir = async (req, res) => {
   }
 };
 
-// CRIAR SOLUÇÃO
+// CRIAR SOLUÇÃO DO CHAMADO
+// apenas técnico responsável pode enviar solução
+// ao criar solução, chamado é finalizado automaticamente
 export const criarSolucao = async (req, res) => {
   try {
     const usuario = req.usuario;
@@ -186,6 +210,7 @@ export const criarSolucao = async (req, res) => {
     const id = Number(req.params.id);
     const { descricao } = req.body;
 
+    // valida descrição
     if (!descricao) {
       return res.status(400).json({
         erro: 'Descrição da solução é obrigatória'
@@ -200,20 +225,21 @@ export const criarSolucao = async (req, res) => {
       });
     }
 
-    // opcional: garantir que só o técnico responsável responda
+    // garante que só o técnico responsável responda
     if (chamado.tecnicoId !== usuario.id) {
       return res.status(403).json({
         erro: 'Você não é o técnico responsável por este chamado'
       });
     }
 
+    // cria solução
     const solucao = await service.criarSolucao({
       descricao,
       chamadoId: id,
       tecnicoId: usuario.id
     });
 
-    // finalizar chamado automaticamente
+    // finaliza chamado automaticamente
     await service.atualizar(id, {
       status: 'FINALIZADO'
     });

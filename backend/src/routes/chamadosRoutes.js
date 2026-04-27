@@ -2,9 +2,12 @@ import { Router } from 'express';
 import * as chamadosController from '../controllers/chamadosController.js';
 import { auth } from '../middlewares/auth.js';
 
+
 const router = Router();
 
-//todas protegidas
+/* Quando uma requisição HTTP chega com método + URL correspondente, 
+o Express executa o middleware "auth" e depois chama o controller indicado. */
+
 router.get('/', auth, chamadosController.listar);
 
 // rota mais específica primeiro
