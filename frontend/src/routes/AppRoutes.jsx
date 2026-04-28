@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
+// Hook que traz dados globais de autenticação (usuário, role, status de login)
 import { useAuthContext } from '../context/AuthContext';
 
+// Importação das páginas da aplicação
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import CadastroUsuario from '../pages/CadastroUsuario';
@@ -19,35 +22,51 @@ import ChamadosTecnico from '../pages/ChamadosTecnico';
 import ChamadosResolvidos from '../pages/ChamadosResolvidos';
 
 export default function AppRoutes() {
+
+  // Pega informações globais de autenticação
   const { isAuthenticated, role, loading } = useAuthContext();
 
+  // Enquanto estiver verificando login (ex: restaurando sessão), mostra carregamento
   if (loading) {
     return <p>Carregando...</p>;
   }
 
+  // Componente interno para proteger rotas (controle de acesso)
   const PrivateRoute = ({ children, allowedRoles }) => {
+
+    // Se não estiver logado, redireciona para login
     if (!isAuthenticated) {
       return <Navigate to="/login" />;
     }
 
+    // Se a rota tiver restrição de roles e o usuário não tiver permissão
     if (allowedRoles && !allowedRoles.includes(role)) {
       return <Navigate to="/dashboard" />;
     }
 
+    // Se passou nas validações, libera o acesso à página
     return children;
   };
 
   return (
     <BrowserRouter>
+
       <Routes>
 
-        {/* PUBLICAS */}
+        {/* ==================== ROTAS PÚBLICAS ==================== */}
+
+        {/* Página inicial */}
         <Route path="/" element={<Home />} />
 
+        {/* Login */}
         <Route path="/login" element={<Login />} />
+
+        {/* Cadastro de usuário (público) */}
         <Route path="/cadastro" element={<CadastroUsuario />} />
 
-        {/* PROTEGIDAS */}
+        {/* ==================== ROTAS PROTEGIDAS ==================== */}
+
+        {/* Dashboard (qualquer usuário logado) */}
         <Route
           path="/dashboard"
           element={
@@ -57,6 +76,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Lista de chamados (USER e ADMIN) */}
         <Route
           path="/chamados"
           element={
@@ -66,6 +86,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Criar chamado (USER e ADMIN) */}
         <Route
           path="/cadastrar"
           element={
@@ -75,6 +96,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Editar chamado por ID (USER e ADMIN) */}
         <Route
           path="/editar/:id"
           element={
@@ -84,7 +106,9 @@ export default function AppRoutes() {
           }
         />
 
-        {/* ADMIN */}
+        {/* ==================== ROTAS ADMIN ==================== */}
+
+        {/* Gerenciamento de usuários */}
         <Route
           path="/gerenciar-usuarios"
           element={
@@ -94,6 +118,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Gerenciamento de técnicos */}
         <Route
           path="/gerenciar-tecnicos"
           element={
@@ -103,6 +128,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Criar usuário (ADMIN) */}
         <Route
           path="/usuarios/novo"
           element={
@@ -112,6 +138,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Editar usuário (ADMIN) */}
         <Route
           path="/usuarios/editar/:id"
           element={
@@ -121,6 +148,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Criar técnico (ADMIN) */}
         <Route
           path="/tecnicos/novo"
           element={
@@ -130,6 +158,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Editar técnico (ADMIN) */}
         <Route
           path="/tecnicos/editar/:id"
           element={
@@ -139,6 +168,9 @@ export default function AppRoutes() {
           }
         />
 
+        {/* ==================== ROTAS TÉCNICO ==================== */}
+
+        {/* Chamados atribuídos ao técnico */}
         <Route
           path="/chamados-tecnico"
           element={
@@ -148,6 +180,7 @@ export default function AppRoutes() {
           }
         />
 
+        {/* Chamados resolvidos pelo técnico */}
         <Route
           path="/chamados-resolvidos"
           element={
@@ -157,7 +190,9 @@ export default function AppRoutes() {
           }
         />
 
-        {/* 404 */}
+        {/* ==================== ROTA 404 ==================== */}
+
+        {/* Qualquer rota inexistente */}
         <Route
           path="*"
           element={<ErrorPage mensagem="Página não encontrada" />}
